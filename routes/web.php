@@ -21,15 +21,21 @@ Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->na
 Route::post('/register', [RegisterController::class, 'register']);
 
 Route::middleware(['auth'])->group(function () {
+    // Shared Routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    Route::resource('students', StudentController::class);
-    Route::resource('faculty', FacultyController::class);
-    Route::resource('subjects', SubjectController::class);
-    
-    Route::get('/grading', [GradeController::class, 'index'])->name('grading.index');
-    Route::get('/grading/encode/{student}', [GradeController::class, 'encode'])->name('grading.encode');
-    Route::post('/grading/store', [GradeController::class, 'store'])->name('grading.store');
-    
     Route::get('/reports', [DashboardController::class, 'reports'])->name('reports.index');
+
+    // Admin Only: Full Access to Management
+    Route::middleware(['role:admin'])->group(function () {
+        Route::resource('students', StudentController::class);
+        Route::resource('faculty', FacultyController::class);
+        Route::resource('subjects', SubjectController::class);
+    });
+
+    // Admin & Faculty: Grading Access
+    Route::middleware(['role:admin,faculty'])->group(function () {
+        Route::get('/grading', [GradeController::class, 'index'])->name('grading.index');
+        Route::get('/grading/encode/{student}', [GradeController::class, 'encode'])->name('grading.encode');
+        Route::post('/grading/store', [GradeController::class, 'store'])->name('grading.store');
+    });
 });
