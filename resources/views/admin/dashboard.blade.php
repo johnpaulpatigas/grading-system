@@ -3,12 +3,15 @@
 @section('title', 'Admin Dashboard')
 
 @section('content')
-<div class="mb-8">
+<!-- Page Title -->
+<div class="mb-8" data-purpose="dashboard-header">
     <h2 class="text-3xl font-bold text-gray-900">Registrar Dashboard</h2>
     <p class="text-gray-500 mt-1">Real-time overview of academic records and institutional performance.</p>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<!-- BEGIN: SummaryCards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" data-purpose="stat-cards-container">
+    <!-- Total Students Card -->
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
         <div>
             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total Students</span>
@@ -17,12 +20,12 @@
                 <span class="text-xs font-semibold text-green-500">2.4%</span>
             </div>
         </div>
-        <button class="mt-6 w-full py-2.5 bg-[#0052cc] text-white rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:bg-blue-700 transition-colors">
+        <a href="{{ route('students.create') }}" class="mt-6 w-full py-2.5 bg-[#0052cc] text-white rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:bg-blue-700 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             Add Student
-        </button>
+        </a>
     </div>
-
+    <!-- Total Subjects Card -->
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
         <div>
             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total Subjects</span>
@@ -31,12 +34,12 @@
                 <span class="text-xs font-semibold text-gray-400">Active</span>
             </div>
         </div>
-        <button class="mt-6 w-full py-2.5 bg-[#0052cc] text-white rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:bg-blue-700 transition-colors">
+        <a href="{{ route('subjects.create') }}" class="mt-6 w-full py-2.5 bg-[#0052cc] text-white rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:bg-blue-700 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             Add Subject
-        </button>
+        </a>
     </div>
-
+    <!-- Encoded Grades Card -->
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
         <div>
             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Encoded Grades</span>
@@ -47,21 +50,151 @@
                 </div>
             </div>
         </div>
-        <button class="mt-6 w-full py-2.5 bg-[#0052cc] text-white rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:bg-blue-700 transition-colors">
+        <a href="{{ route('faculty.create') }}" class="mt-6 w-full py-2.5 bg-[#0052cc] text-white rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:bg-blue-700 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             Add Teacher
-        </button>
+        </a>
     </div>
-
+    <!-- Passing Rate Card -->
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
         <div>
             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Passing Rate</span>
             <div class="flex items-baseline gap-2 mt-1">
                 <span class="text-3xl font-bold text-gray-900">92%</span>
-                <span class="text-xs font-semibold text-green-500">Strong</span>
+                <div class="flex items-center gap-1 text-xs font-semibold text-green-500">
+                    <svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" fill-rule="evenodd"></path></svg>
+                    Strong
+                </div>
             </div>
         </div>
-        <div class="mt-6 h-10"></div>
+        <div class="mt-6 flex items-center h-10">
+            <!-- Space matching the buttons height -->
+        </div>
     </div>
 </div>
+<!-- END: SummaryCards -->
+
+<!-- BEGIN: ChartsSection -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6" data-purpose="charts-row">
+    <!-- Grading Progress Chart -->
+    <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[400px]">
+        <div class="px-6 py-4 flex items-center justify-between border-b border-gray-50">
+            <h3 class="font-bold text-gray-800">Grading Progress</h3>
+            <span class="text-xs px-2.5 py-1 bg-gray-50 text-gray-500 rounded-md font-medium border border-gray-100">Last 30 Days</span>
+        </div>
+        <div class="flex-1 p-6 relative">
+            <canvas class="w-full h-full" data-purpose="line-chart-canvas" id="gradingProgressChart"></canvas>
+            <div class="absolute bottom-6 left-10 flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+                <span class="text-xs font-medium text-gray-500">Encoded Grades</span>
+            </div>
+        </div>
+    </div>
+    <!-- Grade Distribution Chart -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[400px]">
+        <div class="px-6 py-4 border-b border-gray-50">
+            <h3 class="font-bold text-gray-800">Grade Distribution</h3>
+        </div>
+        <div class="flex-1 flex flex-col items-center justify-center p-6">
+            <div class="relative w-48 h-48 mb-8" data-purpose="donut-chart-container">
+                <!-- Simple SVG Donut Chart representation -->
+                <svg class="w-full h-full" viewbox="0 0 100 100">
+                    <circle cx="50" cy="50" fill="none" r="40" stroke="#f3f4f6" stroke-width="12"></circle>
+                    <circle cx="50" cy="50" fill="none" r="40" stroke="#3b82f6" stroke-dasharray="163 251" stroke-dashoffset="0" stroke-width="12" transform="rotate(-90 50 50)"></circle>
+                    <circle cx="50" cy="50" fill="none" r="40" stroke="#64748b" stroke-dasharray="50 251" stroke-dashoffset="-163" stroke-width="12" transform="rotate(-90 50 50)"></circle>
+                    <circle cx="50" cy="50" fill="none" r="40" stroke="#ef4444" stroke-dasharray="38 251" stroke-dashoffset="-213" stroke-width="12" transform="rotate(-90 50 50)"></circle>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <span class="text-2xl font-bold text-gray-900">1.2k</span>
+                    <span class="text-[10px] uppercase font-bold text-gray-400 tracking-tighter">Total Grades</span>
+                </div>
+            </div>
+            <div class="w-full space-y-3" data-purpose="chart-legend">
+                <div class="flex items-center justify-between text-xs font-medium">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                        <span class="text-gray-600">Passing (A/B/C)</span>
+                    </div>
+                    <span class="text-gray-900">65%</span>
+                </div>
+                <div class="flex items-center justify-between text-xs font-medium">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+                        <span class="text-gray-600">Conditional (D)</span>
+                    </div>
+                    <span class="text-gray-900">20%</span>
+                </div>
+                <div class="flex items-center justify-between text-xs font-medium">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                        <span class="text-gray-600">Failing (E/F)</span>
+                    </div>
+                    <span class="text-gray-900">15%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END: ChartsSection -->
 @endsection
+
+@push('scripts')
+<script data-purpose="canvas-setup">
+    // Simplified Canvas rendering for the Grading Progress curve
+    const canvas = document.getElementById('gradingProgressChart');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      const resizeCanvas = () => {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight - 40;
+        drawChart();
+      };
+
+      const drawChart = () => {
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        // Styling for the wave/line
+        ctx.beginPath();
+        ctx.moveTo(0, h * 0.85);
+        ctx.bezierCurveTo(w * 0.2, h * 0.8, w * 0.3, h * 0.5, w * 0.4, h * 0.7);
+        ctx.bezierCurveTo(w * 0.5, h * 0.8, w * 0.6, h * 0.6, w * 0.7, h * 0.55);
+        ctx.bezierCurveTo(w * 0.85, h * 0.5, w * 0.95, h * 0.2, w, h * 0.3);
+        
+        // Stroke
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // Fill below
+        ctx.lineTo(w, h);
+        ctx.lineTo(0, h);
+        ctx.closePath();
+        const gradient = ctx.createLinearGradient(0, 0, 0, h);
+        gradient.addColorStop(0, 'rgba(37, 99, 235, 0.08)');
+        gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // Decorative points (representing the data markers seen in image)
+        const points = [
+            {x: w * 0.3, y: h * 0.65},
+            {x: w * 0.6, y: h * 0.6},
+            {x: w * 0.9, y: h * 0.35}
+        ];
+
+        points.forEach(pt => {
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#2563eb';
+          ctx.fill();
+        });
+      };
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+    }
+</script>
+@endpush

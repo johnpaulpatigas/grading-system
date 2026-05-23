@@ -4,26 +4,43 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>CPC Portal - @yield('title', 'Dashboard')</title>
+    <!-- Tailwind CSS v3 CDN -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts for Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .sidebar-active { background-color: rgba(255, 255, 255, 0.1); border-left: 4px solid #3b82f6; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E0; border-radius: 10px; }
+    <style data-purpose="typography">
+        body {
+            font-family: 'Inter', sans-serif;
+        }
     </style>
+    <style data-purpose="custom-layout">
+        .sidebar-active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #3b82f6;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E0;
+            border-radius: 10px;
+        }
+    </style>
+    @stack('styles')
 </head>
 <body class="bg-gray-50 flex h-screen overflow-hidden">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-[#1a1c23] text-gray-400 flex flex-col h-full">
+    <!-- BEGIN: LeftSidebar -->
+    <aside class="w-64 bg-[#1a1c23] text-gray-400 flex flex-col h-full" data-purpose="main-sidebar">
+        <!-- Sidebar Logo Section -->
         <div class="p-6 flex items-center gap-3">
-            <img alt="CPC Logo" class="w-10 h-10 object-contain rounded-full bg-white p-0.5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5MdWhunn_mmZD54EDZCmsylN7-pZ81bM9pf5PVpPUfMQWXnwtb-G6ZJ-T0mehVznCi9Bd_DYjeTQyg1dpxyuSP4VntB8hQA9MZ1LTRDn3vyuArr_Cz_o86JqavmaKA_ecfuKmA3Xlzlf39nbpExrYeXA57PfSzI2k3oC_Wab8z8Hzwra2cYxI7xlzPFSvpqo9C0aSIsn2gKRMlU-pRQ78VI0BI2YK6-IV_hMqnKL9Ofvn7aCMDrgI0OAqcXJpQgFdIwFqYWqqGdY"/>
+            <img alt="CPC Logo" class="w-10 h-10 object-contain rounded-full bg-white p-0.5" data-purpose="logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5MdWhunn_mmZD54EDZCmsylN7-pZ81bM9pf5PVpPUfMQWXnwtb-G6ZJ-T0mehVznCi9Bd_DYjeTQyg1dpxyuSP4VntB8hQA9MZ1LTRDn3vyuArr_Cz_o86JqavmaKA_ecfuKmA3Xlzlf39nbpExrYeXA57PfSzI2k3oC_Wab8z8Hzwra2cYxI7xlzPFSvpqo9C0aSIsn2gKRMlU-pRQ78VI0BI2YK6-IV_hMqnKL9Ofvn7aCMDrgI0OAqcXJpQgFdIwFqYWqqGdY"/>
             <div>
                 <h1 class="text-white font-bold text-lg leading-tight">CPC Portal</h1>
                 <p class="text-xs text-gray-500">{{ Auth::user()->role === 'admin' ? 'Registrar Office' : (Auth::user()->role === 'faculty' ? 'Faculty Portal' : 'Student Portal') }}</p>
             </div>
         </div>
-        <nav class="flex-1 px-4 mt-4 space-y-1 overflow-y-auto custom-scrollbar">
+        <!-- Main Navigation -->
+        <nav class="flex-1 px-4 mt-4 space-y-1 overflow-y-auto custom-scrollbar" data-purpose="sidebar-navigation">
             <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('dashboard') ? 'text-white sidebar-active' : 'hover:bg-white/5 hover:text-white' }} rounded-lg transition-colors" href="{{ route('dashboard') }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
                 <span>Dashboard</span>
@@ -53,7 +70,12 @@
                 <span>Reports</span>
             </a>
         </nav>
-        <div class="p-4 border-t border-gray-800">
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-gray-800" data-purpose="sidebar-footer">
+            <a class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 hover:text-white rounded-lg transition-colors" href="#">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                <span>Help Center</span>
+            </a>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 hover:text-white rounded-lg transition-colors text-gray-400">
@@ -63,25 +85,43 @@
             </form>
         </div>
     </aside>
+    <!-- END: LeftSidebar -->
 
-    <!-- Main Content -->
+    <!-- BEGIN: MainContent -->
     <main class="flex-1 flex flex-col h-full overflow-hidden">
-        <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+        <!-- Top Header Bar -->
+        <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between" data-purpose="top-header">
             <div class="flex-1 max-w-2xl relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
                 </span>
-                <input class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm" placeholder="Search..." type="text"/>
+                <input class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm" placeholder="Search records, students, or grades..." type="text"/>
             </div>
-            <div class="flex items-center gap-4 ml-6">
-                <span class="text-sm font-medium text-gray-700">{{ Auth::user()->name }}</span>
-                <img class="h-8 w-8 rounded-full border border-gray-200" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}" alt="">
+            <div class="flex items-center gap-6 ml-6">
+                <button class="text-gray-400 hover:text-gray-600 relative">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                    <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+                <button class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                </button>
+                <div class="flex items-center gap-3 border-l border-gray-200 pl-6">
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-gray-900">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-gray-500 capitalize">{{ Auth::user()->role }}</p>
+                    </div>
+                    <img class="h-10 w-10 rounded-full border-2 border-white shadow-sm" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0052cc&color=fff" alt="">
+                </div>
             </div>
         </header>
 
+        <!-- Scrollable Dashboard Content -->
         <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
             @yield('content')
         </div>
     </main>
+    <!-- END: MainContent -->
+    @stack('scripts')
 </body>
 </html>
+
