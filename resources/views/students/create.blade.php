@@ -63,7 +63,7 @@
                     <!-- Course/Department -->
                     <div class="space-y-1.5">
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="course">Course <span class="text-red-500">*</span></label>
-                        <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-no-repeat bg-[right_1rem_center]" id="course" name="course" required>
+                        <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-none bg-no-repeat bg-[right_1rem_center]" id="course" name="course" required>
                             <option value="">Select Course</option>
                             <option value="BS Computer Science" {{ old('course') === 'BS Computer Science' ? 'selected' : '' }}>BS Computer Science</option>
                             <option value="BS Information Tech" {{ old('course') === 'BS Information Tech' ? 'selected' : '' }}>BS Information Tech</option>
@@ -75,7 +75,7 @@
                     <!-- Year Level -->
                     <div class="space-y-1.5">
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="year_level">Year Level <span class="text-red-500">*</span></label>
-                        <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-no-repeat bg-[right_1rem_center]" id="year_level" name="year_level" required>
+                        <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-none bg-no-repeat bg-[right_1rem_center]" id="year_level" name="year_level" required>
                             <option value="">Select Year</option>
                             <option value="1st Year" {{ old('year_level') === '1st Year' ? 'selected' : '' }}>1st Year</option>
                             <option value="2nd Year" {{ old('year_level') === '2nd Year' ? 'selected' : '' }}>2nd Year</option>
@@ -88,7 +88,7 @@
                     <!-- Section -->
                     <div class="space-y-1.5">
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="section">Section <span class="text-red-500">*</span></label>
-                        <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-no-repeat bg-[right_1rem_center]" id="section" name="section" required>
+                        <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-none bg-no-repeat bg-[right_1rem_center]" id="section" name="section" required>
                             <option value="">Select Section</option>
                             <option value="A-1" {{ old('section') === 'A-1' ? 'selected' : '' }}>Section A-1</option>
                             <option value="B-4" {{ old('section') === 'B-4' ? 'selected' : '' }}>Section B-4</option>

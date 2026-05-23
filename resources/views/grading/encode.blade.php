@@ -73,7 +73,7 @@
             <!-- Remarks Input -->
             <div class="space-y-1.5">
                 <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="remarks">Status / Remarks (Optional override)</label>
-                <select class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-sm bg-gray-50/50 appearance-none bg-no-repeat bg-[right_1rem_center]" id="remarks" name="remarks">
+                <select class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-sm bg-gray-50/50 appearance-none bg-none bg-no-repeat bg-[right_1rem_center]" id="remarks" name="remarks">
                     <option value="">Auto-calculate based on average</option>
                     <option value="Pass" {{ old('remarks', $grade?->remarks) === 'Pass' ? 'selected' : '' }}>Pass</option>
                     <option value="Fail" {{ old('remarks', $grade?->remarks) === 'Fail' ? 'selected' : '' }}>Fail</option>

@@ -63,7 +63,7 @@
                     <!-- Department -->
                     <div class="space-y-1.5">
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="department">Department <span class="text-red-500">*</span></label>
-                        <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-no-repeat bg-[right_1rem_center]" id="department" name="department" required>
+                        <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-none bg-no-repeat bg-[right_1rem_center]" id="department" name="department" required>
                             <option value="">Select Department</option>
                             <option value="College of Computer Studies" {{ old('department') === 'College of Computer Studies' ? 'selected' : '' }}>College of Computer Studies</option>
                             <option value="College of Business & Education" {{ old('department') === 'College of Business & Education' ? 'selected' : '' }}>College of Business & Education</option>

@@ -72,7 +72,7 @@
     <div class="flex items-center space-x-4">
         <h2 class="text-2xl font-bold text-slate-800 border-r border-slate-300 pr-4">Grade Encoding</h2>
         <form action="{{ route('grading.index') }}" method="GET" class="relative">
-            <select name="subject_id" onchange="this.form.submit()" class="appearance-none bg-blue-50 border border-blue-100 text-blue-700 font-semibold py-2.5 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+            <select name="subject_id" onchange="this.form.submit()" class="appearance-none bg-none bg-blue-50 border border-blue-100 text-blue-700 font-semibold py-2.5 pl-4 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                 @foreach($subjects as $subject)
                     <option value="{{ $subject->id }}" {{ $selectedSubjectId == $subject->id ? 'selected' : '' }}>
                         {{ $subject->subject_code }}: {{ $subject->description }}
