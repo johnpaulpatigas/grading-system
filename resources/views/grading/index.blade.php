@@ -85,8 +85,11 @@
         </form>
     </div>
     <div class="flex items-center space-x-3">
-        <button class="px-6 py-2.5 text-blue-600 font-semibold text-sm hover:bg-blue-50 rounded-lg transition-colors">Save Draft</button>
-        <button class="px-8 py-2.5 bg-[#0258E3] text-white font-semibold text-sm rounded-lg hover:bg-blue-700 shadow-md transition-all">Submit Grades</button>
+        <form action="{{ route('grading.submit') }}" method="POST" onsubmit="return confirm('Are you sure you want to finalize these grades? They cannot be edited afterwards.')">
+            @csrf
+            <input type="hidden" name="subject_id" value="{{ $selectedSubjectId }}">
+            <button type="submit" class="px-8 py-2.5 bg-[#0258E3] text-white font-semibold text-sm rounded-lg hover:bg-blue-700 shadow-md transition-all">Submit Grades</button>
+        </form>
     </div>
 </div>
 <!-- END: Grade Encoding Header -->
@@ -112,6 +115,7 @@
                     <th class="px-6 py-4 text-center">Final (40%)</th>
                     <th class="px-6 py-4 text-center">Average</th>
                     <th class="px-6 py-4 text-center">Remarks</th>
+                    <th class="px-6 py-4 text-center">Status</th>
                     <th class="px-6 py-4 text-right">Actions</th>
                 </tr>
             </thead>
@@ -136,11 +140,22 @@
                         <span class="text-slate-400 text-xs">No Grade</span>
                         @endif
                     </td>
+                    <td class="px-6 py-5 text-center">
+                        @if($grade && $grade->status === 'Final')
+                            <span class="text-xs font-bold text-blue-600">FINAL</span>
+                        @else
+                            <span class="text-xs font-medium text-amber-500">Draft</span>
+                        @endif
+                    </td>
                     <td class="px-6 py-5 text-right">
                         <div class="flex justify-end space-x-3 text-slate-400">
-                            <a href="{{ route('grading.encode', ['student' => $student->id, 'subject_id' => $selectedSubjectId]) }}" class="hover:text-blue-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-                            </a>
+                            @if($grade && $grade->status === 'Final' && !Auth::user()->isAdmin())
+                                <span class="text-xs text-slate-400">Locked</span>
+                            @else
+                                <a href="{{ route('grading.encode', ['student' => $student->id, 'subject_id' => $selectedSubjectId]) }}" class="hover:text-blue-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                                </a>
+                            @endif
                         </div>
                     </td>
                 </tr>

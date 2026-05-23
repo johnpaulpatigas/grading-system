@@ -41,5 +41,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/grading', [GradeController::class, 'index'])->name('grading.index');
         Route::get('/grading/encode/{student}', [GradeController::class, 'encode'])->name('grading.encode');
         Route::post('/grading/store', [GradeController::class, 'store'])->name('grading.store');
+        Route::post('/grading/submit', [GradeController::class, 'submit'])->name('grading.submit');
     });
 });

@@ -15,6 +15,7 @@ class Grade extends Model
         'final',
         'average',
         'remarks',
+        'status',
     ];
 
     protected static function boot()

@@ -50,6 +50,10 @@ class GradeController extends Controller
         $subject = Subject::findOrFail($subjectId);
         $grade = Grade::where('student_id', $student->id)->where('subject_id', $subjectId)->first();
         
+        if ($grade && $grade->status === 'Final' && !Auth::user()->isAdmin()) {
+            return redirect()->route('grading.index', ['subject_id' => $subjectId])->with('error', 'Grades for this subject have been finalized and cannot be edited.');
+        }
+
         return view('grading.encode', compact('student', 'subject', 'grade'));
     }
 
@@ -73,6 +77,11 @@ class GradeController extends Controller
             return back()->with('error', 'No faculty record found to associate with this grade. Please create a faculty record first.');
         }
 
+        $existingGrade = Grade::where('student_id', $request->student_id)->where('subject_id', $request->subject_id)->first();
+        if ($existingGrade && $existingGrade->status === 'Final' && !Auth::user()->isAdmin()) {
+            return back()->with('error', 'Grades for this subject have been finalized and cannot be edited.');
+        }
+
         $gradeRecord = Grade::updateOrCreate(
             [
                 'student_id' => $request->student_id,
@@ -90,5 +99,28 @@ class GradeController extends Controller
         $gradeRecord->student->refreshAcademicStatus();
 
         return redirect()->route('grading.index', ['subject_id' => $request->subject_id])->with('success', 'Grade saved and academic status refreshed.');
+    }
+
+    public function submit(Request $request)
+    {
+        $request->validate([
+            'subject_id' => 'required|exists:subjects,id',
+        ]);
+
+        $subjectId = $request->subject_id;
+        $facultyId = Auth::user()->faculty?->id;
+
+        if (!$facultyId && !Auth::user()->isAdmin()) {
+            return back()->with('error', 'Unauthorized.');
+        }
+
+        $query = Grade::where('subject_id', $subjectId);
+        if (!Auth::user()->isAdmin()) {
+            $query->where('faculty_id', $facultyId);
+        }
+
+        $query->update(['status' => 'Final']);
+
+        return redirect()->route('grading.index', ['subject_id' => $subjectId])->with('success', 'Grades have been finalized successfully. They can no longer be edited.');
     }
 }
