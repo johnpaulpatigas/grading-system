@@ -10,6 +10,7 @@ class Subject extends Model
         'subject_code',
         'description',
         'units',
+        'max_students',
     ];
 
     public function faculties()

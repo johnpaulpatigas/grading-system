@@ -49,7 +49,7 @@
                     <div class="p-8 space-y-6">
                         <div class="grid grid-cols-2 gap-6">
                             <!-- Subject Code -->
-                            <div class="space-y-1.5">
+                            <div class="space-y-1.5 col-span-2 md:col-span-1">
                                 <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Subject Code <span class="text-red-500">*</span></label>
                                 <input class="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 bg-gray-50/50 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all" name="subject_code" placeholder="e.g., CS101" type="text" value="{{ old('subject_code') }}" required/>
                                 @error('subject_code') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -62,6 +62,15 @@
                                     <span class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400 font-medium">Credits</span>
                                 </div>
                                 @error('units') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                            </div>
+                            <!-- Max Students / Capacity -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Capacity Limit</label>
+                                <div class="relative">
+                                    <input class="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 bg-gray-50/50 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all" name="max_students" placeholder="40" type="number" min="1" value="{{ old('max_students', 40) }}"/>
+                                    <span class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400 font-medium">Students</span>
+                                </div>
+                                @error('max_students') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                             </div>
                         </div>
                         <!-- Subject Title / Description -->

@@ -27,12 +27,19 @@ class EnrollmentController extends Controller
 
         $student = Student::findOrFail($request->student_id);
         
-        // Enforce Prerequisites
-        $subjectsToEnroll = Subject::whereIn('id', $request->subject_ids)->get();
+        // Enforce Prerequisites and Capacity
+        $subjectsToEnroll = Subject::whereIn('id', $request->subject_ids)->withCount('students')->get();
         $passedSubjects = $student->grades()->where('average', '>=', 75)->pluck('subject_id')->toArray();
         $missingPrerequisites = [];
+        $fullSubjects = [];
 
         foreach ($subjectsToEnroll as $subject) {
+            // Check Capacity (only if they are not already enrolled)
+            if (!$student->subjects->contains($subject->id) && $subject->students_count >= $subject->max_students) {
+                $fullSubjects[] = "{$subject->subject_code} (Max: {$subject->max_students})";
+            }
+
+            // Check Prerequisites
             $prerequisites = $subject->prerequisites;
             foreach ($prerequisites as $prereq) {
                 if (!in_array($prereq->id, $passedSubjects)) {
@@ -41,8 +48,16 @@ class EnrollmentController extends Controller
             }
         }
 
+        $errorMessages = [];
+        if (!empty($fullSubjects)) {
+            $errorMessages[] = 'The following subjects are at full capacity: ' . implode(', ', $fullSubjects);
+        }
         if (!empty($missingPrerequisites)) {
-            return back()->with('error', 'Enrollment failed due to missing prerequisites: ' . implode(', ', $missingPrerequisites));
+            $errorMessages[] = 'Missing prerequisites: ' . implode(', ', $missingPrerequisites);
+        }
+
+        if (!empty($errorMessages)) {
+            return back()->with('error', 'Enrollment failed: ' . implode(' | ', $errorMessages));
         }
 
         $student->subjects()->sync($request->subject_ids);

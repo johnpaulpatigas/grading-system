@@ -38,12 +38,18 @@ class SubjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'subject_code' => 'required|string|max:20|unique:subjects',
+            'subject_code' => 'required|string|max:50|unique:subjects',
             'description' => 'required|string|max:255',
-            'units' => 'required|integer|min:1|max:10',
+            'units' => 'required|numeric|min:0.5',
+            'max_students' => 'nullable|integer|min:1',
         ]);
 
-        Subject::create($request->all());
+        Subject::create([
+            'subject_code' => $request->subject_code,
+            'description' => $request->description,
+            'units' => $request->units,
+            'max_students' => $request->max_students ?? 40,
+        ]);
 
         return redirect()->route('subjects.index')->with('success', 'Subject created successfully.');
     }
@@ -70,15 +76,22 @@ class SubjectController extends Controller
     public function update(Request $request, Subject $subject)
     {
         $request->validate([
-            'subject_code' => 'required|string|max:20|unique:subjects,subject_code,' . $subject->id,
+            'subject_code' => 'required|string|max:50|unique:subjects,subject_code,' . $subject->id,
             'description' => 'required|string|max:255',
-            'units' => 'required|integer|min:1|max:10',
+            'units' => 'required|numeric|min:0.5',
+            'max_students' => 'nullable|integer|min:1',
         ]);
 
-        $subject->update($request->all());
+        $subject->update([
+            'subject_code' => $request->subject_code,
+            'description' => $request->description,
+            'units' => $request->units,
+            'max_students' => $request->max_students ?? 40,
+        ]);
 
         return redirect()->route('subjects.index')->with('success', 'Subject updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
