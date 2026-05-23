@@ -15,20 +15,35 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $loginField = $request->has('student_id') ? 'student_id' : 'email';
+        
+        $request->validate([
+            $loginField => ['required'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+        $credentials = $request->only($loginField, 'password');
 
-            return redirect()->intended('dashboard');
+        if ($loginField === 'student_id') {
+            $student = \App\Models\Student::where('student_id', $credentials['student_id'])->first();
+            if ($student) {
+                $user = $student->user;
+                if ($user && \Illuminate\Support\Facades\Hash::check($credentials['password'], $user->password)) {
+                    Auth::login($user);
+                    $request->session()->regenerate();
+                    return redirect()->intended('dashboard');
+                }
+            }
+        } else {
+            if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
+                return redirect()->intended('dashboard');
+            }
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+            $loginField => 'The provided credentials do not match our records.',
+        ])->onlyInput($loginField);
     }
 
     public function logout(Request $request)
