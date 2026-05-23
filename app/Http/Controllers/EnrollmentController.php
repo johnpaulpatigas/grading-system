@@ -27,9 +27,24 @@ class EnrollmentController extends Controller
 
         $student = Student::findOrFail($request->student_id);
         
-        // Sync subjects (this will add new ones and remove ones not in the array)
-        // Or use attach/detach if you prefer to only add.
-        // Let's use sync for a "Manage Enrollment" feel.
+        // Enforce Prerequisites
+        $subjectsToEnroll = Subject::whereIn('id', $request->subject_ids)->get();
+        $passedSubjects = $student->grades()->where('average', '>=', 75)->pluck('subject_id')->toArray();
+        $missingPrerequisites = [];
+
+        foreach ($subjectsToEnroll as $subject) {
+            $prerequisites = $subject->prerequisites;
+            foreach ($prerequisites as $prereq) {
+                if (!in_array($prereq->id, $passedSubjects)) {
+                    $missingPrerequisites[] = "{$subject->subject_code} requires passing {$prereq->subject_code}";
+                }
+            }
+        }
+
+        if (!empty($missingPrerequisites)) {
+            return back()->with('error', 'Enrollment failed due to missing prerequisites: ' . implode(', ', $missingPrerequisites));
+        }
+
         $student->subjects()->sync($request->subject_ids);
 
         return redirect()->route('students.show', $student->id)

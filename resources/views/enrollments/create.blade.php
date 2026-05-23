@@ -18,6 +18,12 @@
         <p class="text-gray-500">Register students into their respective academic subjects.</p>
     </div>
 
+    @if(session('error'))
+        <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+            <span class="block sm:inline">{{ session('error') }}</span>
+        </div>
+    @endif
+
     <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
         <div class="p-8">
             <form action="{{ route('enrollments.store') }}" method="POST" class="space-y-8">
