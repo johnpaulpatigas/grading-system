@@ -33,6 +33,25 @@ class Grade extends Model
                 $grade->remarks = $grade->average >= 75 ? 'Pass' : 'Fail';
             }
         });
+
+        static::created(function ($grade) {
+            GradeLog::create([
+                'grade_id' => $grade->id,
+                'user_id' => auth()->id() ?? 1, // Fallback to 1 for seeders
+                'action' => 'Created',
+                'new_values' => $grade->getAttributes(),
+            ]);
+        });
+
+        static::updated(function ($grade) {
+            GradeLog::create([
+                'grade_id' => $grade->id,
+                'user_id' => auth()->id() ?? 1,
+                'action' => 'Updated',
+                'old_values' => $grade->getOriginal(),
+                'new_values' => $grade->getChanges(),
+            ]);
+        });
     }
 
     public function student()
