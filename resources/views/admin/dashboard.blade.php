@@ -16,8 +16,8 @@
         <div>
             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total Students</span>
             <div class="flex items-baseline gap-2 mt-1">
-                <span class="text-3xl font-bold text-gray-900">11,240</span>
-                <span class="text-xs font-semibold text-green-500">2.4%</span>
+                <span class="text-3xl font-bold text-gray-900">{{ number_format($totalStudents) }}</span>
+                <span class="text-xs font-semibold text-green-500">Live</span>
             </div>
         </div>
         <a href="{{ route('students.create') }}" class="mt-6 w-full py-2.5 bg-[#0052cc] text-white rounded-lg flex items-center justify-center gap-2 text-sm font-semibold hover:bg-blue-700 transition-colors">
@@ -30,7 +30,7 @@
         <div>
             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total Subjects</span>
             <div class="flex items-baseline gap-2 mt-1">
-                <span class="text-3xl font-bold text-gray-900">48</span>
+                <span class="text-3xl font-bold text-gray-900">{{ $totalSubjects }}</span>
                 <span class="text-xs font-semibold text-gray-400">Active</span>
             </div>
         </div>
@@ -44,9 +44,9 @@
         <div>
             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Encoded Grades</span>
             <div class="flex items-center gap-4 mt-1">
-                <span class="text-3xl font-bold text-gray-900">85%</span>
+                <span class="text-3xl font-bold text-gray-900">{{ number_format($encodingProgress, 0) }}%</span>
                 <div class="flex-1 bg-gray-100 h-2 rounded-full overflow-hidden">
-                    <div class="bg-blue-500 h-full w-[85%] rounded-full"></div>
+                    <div class="bg-blue-500 h-full rounded-full" style="width: {{ $encodingProgress }}%"></div>
                 </div>
             </div>
         </div>
@@ -60,10 +60,10 @@
         <div>
             <span class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Passing Rate</span>
             <div class="flex items-baseline gap-2 mt-1">
-                <span class="text-3xl font-bold text-gray-900">92%</span>
+                <span class="text-3xl font-bold text-gray-900">{{ number_format($passingRate, 0) }}%</span>
                 <div class="flex items-center gap-1 text-xs font-semibold text-green-500">
                     <svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" fill-rule="evenodd"></path></svg>
-                    Strong
+                    Calculated
                 </div>
             </div>
         </div>

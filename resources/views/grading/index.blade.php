@@ -24,9 +24,12 @@
             <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
         </div>
         <div class="flex items-baseline space-x-2">
-            <span class="text-3xl font-bold text-blue-600">88.4%</span>
+            @php
+                $averageGrade = $students->flatMap->grades->avg('grade');
+            @endphp
+            <span class="text-3xl font-bold text-blue-600">{{ $averageGrade ? number_format($averageGrade, 1) . '%' : 'N/A' }}</span>
         </div>
-        <p class="text-xs text-emerald-500 mt-2 font-medium">↑ +2.1% from Midterm</p>
+        <p class="text-xs text-emerald-500 mt-2 font-medium">Live Average</p>
     </div>
     <!-- Grading Completion -->
     <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">

@@ -24,16 +24,16 @@
         <div class="relative z-10 flex justify-between items-start mb-6">
             <div>
                 <p class="text-xs uppercase tracking-widest text-blue-100">Semestral GPA</p>
-                <h3 class="text-5xl font-bold mt-1">1.25</h3>
+                <h3 class="text-5xl font-bold mt-1">{{ number_format($gpa ?? 0, 2) }}</h3>
             </div>
             <svg class="w-8 h-8 text-blue-300 opacity-40" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
         </div>
         <div class="relative z-10 flex items-center gap-2 mb-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-            <span class="font-semibold">^0.12</span>
-            <span class="text-blue-100 text-sm">vs last term</span>
+            <span class="font-semibold">^Live</span>
+            <span class="text-blue-100 text-sm">Real-time data</span>
         </div>
-        <p class="relative z-10 font-semibold mt-4">Excellent Performance</p>
+        <p class="relative z-10 font-semibold mt-4">Current Academic Standing</p>
     </div>
     <!-- Units Earned -->
     <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -42,27 +42,13 @@
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
         </div>
         <div class="flex items-baseline gap-1 mb-2">
-            <h3 class="text-3xl font-bold text-gray-900">24.0</h3>
-            <span class="text-gray-400">/ 26.0</span>
+            <h3 class="text-3xl font-bold text-gray-900">{{ number_format($unitsEarned, 1) }}</h3>
+            <span class="text-gray-400">Credits</span>
         </div>
         <div class="w-full bg-gray-100 h-1.5 rounded-full mt-4 overflow-hidden">
-            <div class="bg-blue-600 h-full w-[92%]"></div>
+            <div class="bg-blue-600 h-full w-[100%]"></div>
         </div>
-        <p class="text-xs text-gray-400 mt-3">Full-time Load</p>
-    </div>
-    <!-- Rank in Class -->
-    <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-        <div class="flex justify-between items-start mb-6">
-            <p class="text-xs uppercase tracking-widest text-gray-400 font-bold">Rank in Class</p>
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-        </div>
-        <h3 class="text-3xl font-bold text-gray-900 mb-2">3rd</h3>
-        <p class="text-sm text-gray-500">Top 5% of Department</p>
-        <div class="mt-4 flex gap-1">
-            <div class="w-6 h-6 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-[10px] text-gray-400">1st</div>
-            <div class="w-6 h-6 rounded-full bg-gray-50 border border-gray-200 flex items-center justify-center text-[10px] text-gray-400">2nd</div>
-            <div class="w-6 h-6 rounded-full bg-blue-600 border border-blue-600 flex items-center justify-center text-[10px] text-white font-bold">3rd</div>
-        </div>
+        <p class="text-xs text-gray-400 mt-3">Current Semester Load</p>
     </div>
     <!-- Enrollment Status -->
     <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -71,7 +57,7 @@
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
         </div>
         <div class="mb-4">
-            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold uppercase tracking-wider">Regular</span>
+            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold uppercase tracking-wider">{{ Auth::user()->student->status ?? 'Enrolled' }}</span>
         </div>
         <p class="text-sm text-gray-600 font-medium">Good Standing</p>
         <p class="text-xs text-gray-400 mt-1 italic">Eligibility: Fully Qualified</p>

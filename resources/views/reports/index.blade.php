@@ -49,23 +49,23 @@
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Student ID Number</p>
-                <p class="text-xl font-bold text-slate-700 tracking-wider">2021-00045-MN-0</p>
+                <p class="text-xl font-bold text-slate-700 tracking-wider">{{ Auth::user()->student->student_id ?? 'N/A' }}</p>
             </div>
         </div>
         <div class="space-y-6">
             <div class="grid grid-cols-2">
                 <div>
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Semester</p>
-                    <p class="font-bold text-slate-800">First Semester</p>
+                    <p class="font-bold text-slate-800">Current Semester</p>
                 </div>
                 <div>
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Academic Year</p>
-                    <p class="font-bold text-slate-800">2023 - 2024</p>
+                    <p class="font-bold text-slate-800">2026</p>
                 </div>
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Degree Program</p>
-                <p class="font-bold text-slate-800 leading-tight">Bachelor of Science in Information Technology (BSIT)</p>
+                <p class="font-bold text-slate-800 leading-tight">{{ Auth::user()->student->course ?? 'Not Assigned' }}</p>
             </div>
         </div>
     </div>
@@ -84,24 +84,23 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
+                @forelse(Auth::user()->student->grades ?? [] as $grade)
                 <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="py-5 px-6 font-bold text-blue-700 text-sm">ITEC 30013</td>
-                    <td class="py-5 px-6 text-sm text-slate-700">Advanced Database Systems</td>
-                    <td class="py-5 px-6 text-sm text-center text-slate-600">3.0</td>
-                    <td class="py-5 px-6 font-bold text-lg text-center text-slate-800">1.25</td>
+                    <td class="py-5 px-6 font-bold text-blue-700 text-sm">{{ $grade->subject->subject_code }}</td>
+                    <td class="py-5 px-6 text-sm text-slate-700">{{ $grade->subject->description }}</td>
+                    <td class="py-5 px-6 text-sm text-center text-slate-600">{{ number_format($grade->subject->units, 1) }}</td>
+                    <td class="py-5 px-6 font-bold text-lg text-center text-slate-800">{{ number_format($grade->grade, 2) }}</td>
                     <td class="py-5 px-6 text-center">
-                        <span class="inline-flex items-center px-3 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700 uppercase tracking-wider border border-green-200">Pass</span>
+                        <span class="inline-flex items-center px-3 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700 uppercase tracking-wider border border-green-200">
+                            {{ $grade->remarks ?? 'Pass' }}
+                        </span>
                     </td>
                 </tr>
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="py-5 px-6 font-bold text-blue-700 text-sm">ITEC 30023</td>
-                    <td class="py-5 px-6 text-sm text-slate-700">Software Engineering 2</td>
-                    <td class="py-5 px-6 text-sm text-center text-slate-600">3.0</td>
-                    <td class="py-5 px-6 font-bold text-lg text-center text-slate-800">1.50</td>
-                    <td class="py-5 px-6 text-center">
-                        <span class="inline-flex items-center px-3 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700 uppercase tracking-wider border border-green-200">Pass</span>
-                    </td>
+                @empty
+                <tr>
+                    <td colspan="5" class="py-10 text-center text-gray-500 italic">No academic records found for the current term.</td>
                 </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
