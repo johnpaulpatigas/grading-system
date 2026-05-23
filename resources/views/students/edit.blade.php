@@ -1,0 +1,88 @@
+@extends('layouts.app')
+
+@section('title', 'Edit Student Record')
+
+@section('content')
+<nav class="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+    <a href="{{ route('students.index') }}" class="flex items-center hover:text-gray-800 transition-colors">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Go Back
+    </a>
+    <span>›</span>
+    <span class="font-medium text-gray-800">Edit Student</span>
+</nav>
+
+<div class="mb-10">
+    <h2 class="text-3xl font-bold text-gray-900 mb-1">Edit Student Record</h2>
+    <p class="text-gray-500">Update student entry for the grading system.</p>
+</div>
+
+<div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+    <div class="p-8">
+        <div class="flex items-center space-x-4 mb-8">
+            <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-gray-900">Personal Student Information</h3>
+                <p class="text-sm text-gray-500">Update official details and account information.</p>
+            </div>
+        </div>
+
+        <form action="{{ route('students.update', $student) }}" method="POST" class="space-y-6">
+            @csrf
+            @method('PUT')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="name">Full Name <span class="text-red-500">*</span></label>
+                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="name" name="name" placeholder="e.g. Jane Doe" type="text" value="{{ old('name', $student->user->name) }}" required/>
+                    @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="email">Email Address <span class="text-red-500">*</span></label>
+                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="email" name="email" placeholder="jane@example.com" type="email" value="{{ old('email', $student->user->email) }}" required/>
+                    @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="student_id">Student ID <span class="text-red-500">*</span></label>
+                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="student_id" name="student_id" placeholder="2023-0001" type="text" value="{{ old('student_id', $student->student_id) }}" required/>
+                    @error('student_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="course">Course <span class="text-red-500">*</span></label>
+                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="course" name="course" placeholder="e.g. BS Computer Science" type="text" value="{{ old('course', $student->course) }}" required/>
+                    @error('course') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="year_level">Year Level <span class="text-red-500">*</span></label>
+                    <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600" id="year_level" name="year_level" required>
+                        <option value="">Select Year</option>
+                        <option value="1st Year" {{ old('year_level', $student->year_level) == '1st Year' ? 'selected' : '' }}>1st Year</option>
+                        <option value="2nd Year" {{ old('year_level', $student->year_level) == '2nd Year' ? 'selected' : '' }}>2nd Year</option>
+                        <option value="3rd Year" {{ old('year_level', $student->year_level) == '3rd Year' ? 'selected' : '' }}>3rd Year</option>
+                        <option value="4th Year" {{ old('year_level', $student->year_level) == '4th Year' ? 'selected' : '' }}>4th Year</option>
+                    </select>
+                    @error('year_level') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="section">Section <span class="text-red-500">*</span></label>
+                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="section" name="section" placeholder="e.g. A-1" type="text" value="{{ old('section', $student->section) }}" required/>
+                    @error('section') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+
+            <div class="pt-10 flex justify-end">
+                <button class="bg-[#0047cc] hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center space-x-2 transition-all" type="submit">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                    <span>Update Record</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
