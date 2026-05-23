@@ -31,7 +31,9 @@ class GradeController extends Controller
 
         $selectedSubjectId = $request->get('subject_id', $subjects->first()->id);
         
-        $students = Student::with(['user', 'grades' => function($query) use ($selectedSubjectId) {
+        $students = Student::whereHas('subjects', function($query) use ($selectedSubjectId) {
+            $query->where('subject_id', $selectedSubjectId);
+        })->with(['user', 'grades' => function($query) use ($selectedSubjectId) {
             $query->where('subject_id', $selectedSubjectId);
         }])->get();
 

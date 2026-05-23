@@ -17,6 +17,11 @@ class Subject extends Model
         return $this->belongsToMany(Faculty::class);
     }
 
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'enrollments');
+    }
+
     public function prerequisites()
     {
         return $this->belongsToMany(Subject::class, 'subject_prerequisites', 'subject_id', 'prerequisite_id');
