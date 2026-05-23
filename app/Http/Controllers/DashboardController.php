@@ -56,9 +56,20 @@ class DashboardController extends Controller
                 'encodingProgress', 'passingRate', 'distPercents', 
                 'distTotal', 'dailyProgress'
             ));
-        }
- elseif ($user->isFaculty()) {
-            return view('faculty.dashboard');
+        } elseif ($user->isFaculty()) {
+            $faculty = $user->faculty;
+            $subjects = $faculty ? $faculty->subjects()->with('students')->get() : collect();
+            
+            $totalSubjects = $subjects->count();
+            $totalUnits = $subjects->sum('units');
+            
+            $totalStudents = $subjects->sum(fn($s) => $s->students->count());
+            
+            $expectedGrades = $totalStudents;
+            $actualGrades = Grade::where('faculty_id', $faculty?->id)->count();
+            $gradingProgress = $expectedGrades > 0 ? ($actualGrades / $expectedGrades) * 100 : 0;
+
+            return view('faculty.dashboard', compact('subjects', 'totalSubjects', 'totalUnits', 'totalStudents', 'gradingProgress', 'actualGrades', 'expectedGrades'));
         } else {
             $student = $user->student;
             $grades = $student ? $student->grades()->with('subject')->get() : collect();
