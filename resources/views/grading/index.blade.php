@@ -123,14 +123,14 @@
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-5 font-medium">{{ $student->student_id }}</td>
                     <td class="px-6 py-5 font-bold text-slate-800">{{ $student->user->name }}</td>
-                    <td class="px-6 py-5 text-center"><span class="text-slate-400">--</span></td>
-                    <td class="px-6 py-5 text-center"><span class="text-slate-400">--</span></td>
-                    <td class="px-6 py-5 text-center"><span class="text-slate-400">--</span></td>
-                    <td class="px-6 py-5 text-center font-bold text-blue-600">{{ $grade ? number_format($grade->grade, 1) : '--' }}</td>
+                    <td class="px-6 py-5 text-center"><span class="{{ $grade && $grade->prelim ? 'text-slate-700' : 'text-slate-400' }}">{{ $grade?->prelim ?? '--' }}</span></td>
+                    <td class="px-6 py-5 text-center"><span class="{{ $grade && $grade->midterm ? 'text-slate-700' : 'text-slate-400' }}">{{ $grade?->midterm ?? '--' }}</span></td>
+                    <td class="px-6 py-5 text-center"><span class="{{ $grade && $grade->final ? 'text-slate-700' : 'text-slate-400' }}">{{ $grade?->final ?? '--' }}</span></td>
+                    <td class="px-6 py-5 text-center font-bold text-blue-600">{{ $grade ? number_format($grade->average, 1) : '--' }}</td>
                     <td class="px-6 py-5 text-center">
                         @if($grade)
-                        <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide">
-                            {{ $grade->remarks ?? 'Pass' }}
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide {{ $grade->average >= 75 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' }}">
+                            {{ $grade->remarks }}
                         </span>
                         @else
                         <span class="text-slate-400 text-xs">No Grade</span>

@@ -49,7 +49,9 @@ class GradeController extends Controller
         $request->validate([
             'student_id' => 'required|exists:students,id',
             'subject_id' => 'required|exists:subjects,id',
-            'grade' => 'required|numeric|min:0|max:100',
+            'prelim' => 'nullable|numeric|min:0|max:100',
+            'midterm' => 'nullable|numeric|min:0|max:100',
+            'final' => 'nullable|numeric|min:0|max:100',
             'remarks' => 'nullable|string|max:255',
         ]);
 
@@ -69,7 +71,9 @@ class GradeController extends Controller
             ],
             [
                 'faculty_id' => $faculty->id,
-                'grade' => $request->grade,
+                'prelim' => $request->prelim,
+                'midterm' => $request->midterm,
+                'final' => $request->final,
                 'remarks' => $request->remarks,
             ]
         );

@@ -41,29 +41,47 @@
                 <input type="hidden" name="student_id" value="{{ $student->id }}">
                 <input type="hidden" name="subject_id" value="{{ $subject->id }}">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                    <!-- Grade Input -->
-                    <div class="space-y-1.5">
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="grade">Numeric Grade (0-100) <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <input class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-sm bg-gray-50/50" id="grade" name="grade" placeholder="e.g. 85.5" type="number" step="0.01" min="0" max="100" value="{{ old('grade', $grade?->grade) }}" required/>
-                            <span class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400 font-medium">%</span>
-                        </div>
-                        @error('grade') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-6">
+                <!-- Prelim -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="prelim">Prelim (30%)</label>
+                    <div class="relative">
+                        <input class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-sm bg-gray-50/50" id="prelim" name="prelim" placeholder="0-100" type="number" step="0.01" min="0" max="100" value="{{ old('prelim', $grade?->prelim) }}"/>
                     </div>
-
-                    <!-- Remarks Input -->
-                    <div class="space-y-1.5">
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="remarks">Status / Remarks</label>
-                        <select class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-sm bg-gray-50/50 appearance-none bg-no-repeat bg-[right_1rem_center]" id="remarks" name="remarks">
-                            <option value="Pass" {{ old('remarks', $grade?->remarks) === 'Pass' ? 'selected' : '' }}>Pass</option>
-                            <option value="Fail" {{ old('remarks', $grade?->remarks) === 'Fail' ? 'selected' : '' }}>Fail</option>
-                            <option value="Incomplete" {{ old('remarks', $grade?->remarks) === 'Incomplete' ? 'selected' : '' }}>Incomplete</option>
-                            <option value="Dropped" {{ old('remarks', $grade?->remarks) === 'Dropped' ? 'selected' : '' }}>Dropped</option>
-                        </select>
-                        @error('remarks') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
+                    @error('prelim') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
+
+                <!-- Midterm -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="midterm">Midterm (30%)</label>
+                    <div class="relative">
+                        <input class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-sm bg-gray-50/50" id="midterm" name="midterm" placeholder="0-100" type="number" step="0.01" min="0" max="100" value="{{ old('midterm', $grade?->midterm) }}"/>
+                    </div>
+                    @error('midterm') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <!-- Final -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="final">Final (40%)</label>
+                    <div class="relative">
+                        <input class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-sm bg-gray-50/50" id="final" name="final" placeholder="0-100" type="number" step="0.01" min="0" max="100" value="{{ old('final', $grade?->final) }}"/>
+                    </div>
+                    @error('final') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+
+            <!-- Remarks Input -->
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="remarks">Status / Remarks (Optional override)</label>
+                <select class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-sm bg-gray-50/50 appearance-none bg-no-repeat bg-[right_1rem_center]" id="remarks" name="remarks">
+                    <option value="">Auto-calculate based on average</option>
+                    <option value="Pass" {{ old('remarks', $grade?->remarks) === 'Pass' ? 'selected' : '' }}>Pass</option>
+                    <option value="Fail" {{ old('remarks', $grade?->remarks) === 'Fail' ? 'selected' : '' }}>Fail</option>
+                    <option value="Incomplete" {{ old('remarks', $grade?->remarks) === 'Incomplete' ? 'selected' : '' }}>Incomplete</option>
+                    <option value="Dropped" {{ old('remarks', $grade?->remarks) === 'Dropped' ? 'selected' : '' }}>Dropped</option>
+                </select>
+                @error('remarks') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
 
                 <!-- Form Action Footer -->
                 <div class="pt-10 flex justify-end border-t border-gray-100">
