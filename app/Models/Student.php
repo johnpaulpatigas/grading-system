@@ -15,6 +15,20 @@ class Student extends Model
         'status',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($student) {
+            if (!$student->student_id) {
+                $year = now()->format('Y');
+                $latest = self::where('student_id', 'LIKE', "STU-$year-%")->orderBy('student_id', 'desc')->first();
+                $sequence = $latest ? (int) substr($latest->student_id, -4) + 1 : 1;
+                $student->student_id = "STU-$year-" . str_pad($sequence, 4, '0', STR_PAD_LEFT);
+            }
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
