@@ -25,7 +25,7 @@
         </div>
         <div class="flex items-baseline space-x-2">
             @php
-                $averageGrade = $students->flatMap->grades->avg('grade');
+                $averageGrade = $students->flatMap->grades->avg('average');
             @endphp
             <span class="text-3xl font-bold text-blue-600">{{ $averageGrade ? number_format($averageGrade, 1) . '%' : 'N/A' }}</span>
         </div>

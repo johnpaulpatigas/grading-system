@@ -120,7 +120,7 @@
                 <tr class="bg-gray-50 font-bold text-gray-900">
                     <td class="px-6 py-4 text-right text-xs uppercase tracking-wider text-gray-400" colspan="5">Semestral Average</td>
                     <td class="px-6 py-4 text-center text-xl text-blue-600 bg-blue-50 border-t-2 border-blue-600">
-                        {{ number_format(Auth::user()->student->grades->avg('grade') ?? 0, 2) }}
+                        {{ number_format(Auth::user()->student->grades->avg('average') ?? 0, 2) }}
                     </td>
                 </tr>
             </tfoot>

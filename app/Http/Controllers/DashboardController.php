@@ -26,16 +26,16 @@ class DashboardController extends Controller
             $actualGrades = Grade::count();
             $encodingProgress = $expectedGrades > 0 ? ($actualGrades / $expectedGrades) * 100 : 0;
 
-            // Calculate passing rate (assuming grade <= 3.0 is passing)
+            // Calculate passing rate (assuming average <= 3.0 is passing)
             $totalGradesCount = Grade::count();
-            $passingGradesCount = Grade::where('grade', '>', 0)->where('grade', '<=', 3.0)->count();
+            $passingGradesCount = Grade::where('average', '>', 0)->where('average', '<=', 3.0)->count();
             $passingRate = $totalGradesCount > 0 ? ($passingGradesCount / $totalGradesCount) * 100 : 0;
 
             // Grade Distribution for Donut Chart
             $distribution = [
-                'passing' => Grade::where('grade', '>', 0)->where('grade', '<=', 3.0)->count(),
-                'conditional' => Grade::where('grade', '>', 3.0)->where('grade', '<=', 4.0)->count(),
-                'failing' => Grade::where('grade', '>', 4.0)->orWhere('remarks', 'Fail')->count(),
+                'passing' => Grade::where('average', '>', 0)->where('average', '<=', 3.0)->count(),
+                'conditional' => Grade::where('average', '>', 3.0)->where('average', '<=', 4.0)->count(),
+                'failing' => Grade::where('average', '>', 4.0)->orWhere('remarks', 'Fail')->count(),
             ];
             $distTotal = array_sum($distribution);
             $distPercents = [
