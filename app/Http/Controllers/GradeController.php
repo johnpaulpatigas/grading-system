@@ -73,7 +73,7 @@ class GradeController extends Controller
             return back()->with('error', 'No faculty record found to associate with this grade. Please create a faculty record first.');
         }
 
-        Grade::updateOrCreate(
+        $gradeRecord = Grade::updateOrCreate(
             [
                 'student_id' => $request->student_id,
                 'subject_id' => $request->subject_id,
@@ -87,6 +87,8 @@ class GradeController extends Controller
             ]
         );
 
-        return redirect()->route('grading.index', ['subject_id' => $request->subject_id])->with('success', 'Grade saved successfully.');
+        $gradeRecord->student->refreshAcademicStatus();
+
+        return redirect()->route('grading.index', ['subject_id' => $request->subject_id])->with('success', 'Grade saved and academic status refreshed.');
     }
 }

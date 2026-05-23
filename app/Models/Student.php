@@ -34,6 +34,26 @@ class Student extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function refreshAcademicStatus()
+    {
+        $grades = $this->grades()->with('subject')->get();
+        if ($grades->isEmpty()) return;
+
+        $totalWeightedPoints = $grades->sum(fn($g) => $g->average * $g->subject->units);
+        $totalUnits = $grades->sum(fn($g) => $g->subject->units);
+        $gpa = $totalUnits > 0 ? $totalWeightedPoints / $totalUnits : 0;
+
+        if ($gpa <= 2.5) {
+            $this->status = 'Regular';
+        } elseif ($gpa <= 3.0) {
+            $this->status = 'Probation';
+        } else {
+            $this->status = 'Irregular';
+        }
+
+        $this->save();
+    }
+
     public function subjects()
     {
         return $this->belongsToMany(Subject::class, 'enrollments');
