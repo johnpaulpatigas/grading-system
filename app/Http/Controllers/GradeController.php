@@ -23,7 +23,7 @@ class GradeController extends Controller
         return view('grading.index', compact('students', 'subjects', 'selectedSubjectId'));
     }
 
-    public function encode(Student student, Request $request)
+    public function encode(Student $student, Request $request)
     {
         $subjectId = $request->get('subject_id');
         $subject = Subject::findOrFail($subjectId);
