@@ -62,14 +62,22 @@ class DashboardController extends Controller
         } else {
             $student = $user->student;
             $grades = $student ? $student->grades()->with('subject')->get() : collect();
-            $gpa = $grades->avg('grade');
-            $unitsEarned = $grades->sum(fn($g) => $g->subject->units);
+            
+            // Weighted GPA Calculation: sum(average * units) / sum(units)
+            $totalWeightedPoints = $grades->sum(fn($g) => $g->average * $g->subject->units);
+            $totalUnits = $grades->sum(fn($g) => $g->subject->units);
+            $gpa = $totalUnits > 0 ? $totalWeightedPoints / $totalUnits : 0;
+            
+            $unitsEarned = $totalUnits;
             
             // Calculate Rank
-            $allStudentAverages = Student::with('grades')->get()->map(function($s) {
+            $allStudentAverages = Student::with(['grades.subject'])->get()->map(function($s) {
+                $sGrades = $s->grades;
+                $twp = $sGrades->sum(fn($g) => $g->average * $g->subject->units);
+                $tu = $sGrades->sum(fn($g) => $g->subject->units);
                 return [
                     'id' => $s->id,
-                    'avg' => $s->grades->avg('grade') ?? 5.0 // Use 5.0 for no grades
+                    'avg' => $tu > 0 ? $twp / $tu : 5.0
                 ];
             })->sortBy('avg')->values();
             
