@@ -97,15 +97,22 @@
         </div>
         <div class="flex-1 flex flex-col items-center justify-center p-6">
             <div class="relative w-48 h-48 mb-8" data-purpose="donut-chart-container">
-                <!-- Simple SVG Donut Chart representation -->
+                @php
+                    $dash1 = ($distPercents['passing'] / 100) * 251;
+                    $dash2 = ($distPercents['conditional'] / 100) * 251;
+                    $dash3 = ($distPercents['failing'] / 100) * 251;
+                    $offset1 = 0;
+                    $offset2 = -$dash1;
+                    $offset3 = -($dash1 + $dash2);
+                @endphp
                 <svg class="w-full h-full" viewbox="0 0 100 100">
                     <circle cx="50" cy="50" fill="none" r="40" stroke="#f3f4f6" stroke-width="12"></circle>
-                    <circle cx="50" cy="50" fill="none" r="40" stroke="#3b82f6" stroke-dasharray="163 251" stroke-dashoffset="0" stroke-width="12" transform="rotate(-90 50 50)"></circle>
-                    <circle cx="50" cy="50" fill="none" r="40" stroke="#64748b" stroke-dasharray="50 251" stroke-dashoffset="-163" stroke-width="12" transform="rotate(-90 50 50)"></circle>
-                    <circle cx="50" cy="50" fill="none" r="40" stroke="#ef4444" stroke-dasharray="38 251" stroke-dashoffset="-213" stroke-width="12" transform="rotate(-90 50 50)"></circle>
+                    <circle cx="50" cy="50" fill="none" r="40" stroke="#3b82f6" stroke-dasharray="{{ $dash1 }} 251" stroke-dashoffset="{{ $offset1 }}" stroke-width="12" transform="rotate(-90 50 50)"></circle>
+                    <circle cx="50" cy="50" fill="none" r="40" stroke="#64748b" stroke-dasharray="{{ $dash2 }} 251" stroke-dashoffset="{{ $offset2 }}" stroke-width="12" transform="rotate(-90 50 50)"></circle>
+                    <circle cx="50" cy="50" fill="none" r="40" stroke="#ef4444" stroke-dasharray="{{ $dash3 }} 251" stroke-dashoffset="{{ $offset3 }}" stroke-width="12" transform="rotate(-90 50 50)"></circle>
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span class="text-2xl font-bold text-gray-900">1.2k</span>
+                    <span class="text-2xl font-bold text-gray-900">{{ $distTotal >= 1000 ? number_format($distTotal/1000, 1) . 'k' : $distTotal }}</span>
                     <span class="text-[10px] uppercase font-bold text-gray-400 tracking-tighter">Total Grades</span>
                 </div>
             </div>
@@ -113,23 +120,23 @@
                 <div class="flex items-center justify-between text-xs font-medium">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-                        <span class="text-gray-600">Passing (A/B/C)</span>
+                        <span class="text-gray-600">Passing (<= 3.0)</span>
                     </div>
-                    <span class="text-gray-900">65%</span>
+                    <span class="text-gray-900">{{ $distPercents['passing'] }}%</span>
                 </div>
                 <div class="flex items-center justify-between text-xs font-medium">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
-                        <span class="text-gray-600">Conditional (D)</span>
+                        <span class="text-gray-600">Conditional (3.1 - 4.0)</span>
                     </div>
-                    <span class="text-gray-900">20%</span>
+                    <span class="text-gray-900">{{ $distPercents['conditional'] }}%</span>
                 </div>
                 <div class="flex items-center justify-between text-xs font-medium">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-                        <span class="text-gray-600">Failing (E/F)</span>
+                        <span class="text-gray-600">Failing (> 4.0 / Fail)</span>
                     </div>
-                    <span class="text-gray-900">15%</span>
+                    <span class="text-gray-900">{{ $distPercents['failing'] }}%</span>
                 </div>
             </div>
         </div>
@@ -140,8 +147,9 @@
 
 @push('scripts')
 <script data-purpose="canvas-setup">
-    // Simplified Canvas rendering for the Grading Progress curve
     const canvas = document.getElementById('gradingProgressChart');
+    const chartData = @json($dailyProgress);
+    
     if (canvas) {
       const ctx = canvas.getContext('2d');
       const resizeCanvas = () => {
@@ -153,19 +161,23 @@
       const drawChart = () => {
         const w = canvas.width;
         const h = canvas.height;
+        const maxVal = Math.max(...chartData, 5); // Ensure a minimum scale
         ctx.clearRect(0, 0, w, h);
 
-        // Styling for the wave/line
         ctx.beginPath();
-        ctx.moveTo(0, h * 0.85);
-        ctx.bezierCurveTo(w * 0.2, h * 0.8, w * 0.3, h * 0.5, w * 0.4, h * 0.7);
-        ctx.bezierCurveTo(w * 0.5, h * 0.8, w * 0.6, h * 0.6, w * 0.7, h * 0.55);
-        ctx.bezierCurveTo(w * 0.85, h * 0.5, w * 0.95, h * 0.2, w, h * 0.3);
+        const stepX = w / (chartData.length - 1);
         
-        // Stroke
+        chartData.forEach((val, i) => {
+            const x = i * stepX;
+            const y = h - (val / maxVal * h * 0.8) - (h * 0.1);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        
         ctx.lineWidth = 4;
         ctx.strokeStyle = '#2563eb';
         ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.stroke();
 
         // Fill below
@@ -178,18 +190,17 @@
         ctx.fillStyle = gradient;
         ctx.fill();
 
-        // Decorative points (representing the data markers seen in image)
-        const points = [
-            {x: w * 0.3, y: h * 0.65},
-            {x: w * 0.6, y: h * 0.6},
-            {x: w * 0.9, y: h * 0.35}
-        ];
-
-        points.forEach(pt => {
-          ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
-          ctx.fillStyle = '#2563eb';
-          ctx.fill();
+        // Points
+        chartData.forEach((val, i) => {
+            const x = i * stepX;
+            const y = h - (val / maxVal * h * 0.8) - (h * 0.1);
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#2563eb';
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
         });
       };
 

@@ -7,12 +7,12 @@
 <div class="mb-8 flex justify-between items-end">
     <div>
         <h2 class="text-3xl font-bold text-gray-900">Student Dashboard</h2>
-        <p class="text-gray-500">Academic Year 2023-2024</p>
+        <p class="text-gray-500">Academic Year {{ now()->format('Y') }}</p>
     </div>
     <div class="flex gap-2">
-        <button class="px-4 py-2 border border-gray-200 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-colors font-semibold">
+        <button class="px-4 py-2 border border-gray-200 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-colors font-semibold text-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-            1st Semester
+            Current Term
         </button>
     </div>
 </div>
@@ -24,7 +24,7 @@
         <div class="relative z-10 flex justify-between items-start mb-6">
             <div>
                 <p class="text-xs uppercase tracking-widest text-blue-100">Semestral GPA</p>
-                <h3 class="text-5xl font-bold mt-1">{{ number_format($gpa ?? 0, 2) }}</h3>
+                <h3 class="text-5xl font-bold mt-1">{{ $gpa ? number_format($gpa, 2) : 'N/A' }}</h3>
             </div>
             <svg class="w-8 h-8 text-blue-300 opacity-40" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
         </div>
@@ -50,6 +50,20 @@
         </div>
         <p class="text-xs text-gray-400 mt-3">Current Semester Load</p>
     </div>
+    <!-- Rank in Class -->
+    <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex justify-between items-start mb-6">
+            <p class="text-xs uppercase tracking-widest text-gray-400 font-bold">Rank in Class</p>
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        </div>
+        <h3 class="text-3xl font-bold text-gray-900 mb-2">{{ $rank }}{{ $ordinal }}</h3>
+        <p class="text-sm text-gray-500">Across overall student list</p>
+        <div class="mt-4 flex gap-1">
+            <div class="w-6 h-6 rounded-full {{ $rank == 1 ? 'bg-blue-600 text-white font-bold' : 'bg-gray-50 text-gray-400' }} border border-gray-200 flex items-center justify-center text-[10px]">1st</div>
+            <div class="w-6 h-6 rounded-full {{ $rank == 2 ? 'bg-blue-600 text-white font-bold' : 'bg-gray-50 text-gray-400' }} border border-gray-200 flex items-center justify-center text-[10px]">2nd</div>
+            <div class="w-6 h-6 rounded-full {{ $rank == 3 ? 'bg-blue-600 text-white font-bold' : 'bg-gray-50 text-gray-400' }} border border-gray-200 flex items-center justify-center text-[10px]">3rd</div>
+        </div>
+    </div>
     <!-- Enrollment Status -->
     <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
         <div class="flex justify-between items-start mb-6">
@@ -69,7 +83,7 @@
     <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h4 class="text-xl font-bold text-gray-900">Semestral Grade Summary</h4>
-            <p class="text-sm text-gray-500">Detailed academic breakdown per term for A.Y. 2023-2024</p>
+            <p class="text-sm text-gray-500">Detailed academic breakdown for the current semester</p>
         </div>
         <div class="flex items-center gap-3">
             <button class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg flex items-center gap-2 hover:bg-gray-100 transition-colors font-semibold text-sm">
