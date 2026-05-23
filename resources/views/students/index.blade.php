@@ -22,34 +22,37 @@
         </div>
     </div>
     <!-- BEGIN: Filter Bar -->
-    <div class="bg-white p-4 rounded-xl border border-gray-200 flex items-center justify-between shadow-sm">
-        <div class="flex items-center gap-4">
+    <form method="GET" action="{{ route('students.index') }}" class="bg-white p-4 rounded-xl border border-gray-200 flex flex-col md:flex-row items-center justify-between shadow-sm gap-4">
+        <div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
             <div class="flex items-center gap-2 text-gray-600 font-medium mr-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
                 Filters:
             </div>
-            <select class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[160px]">
-                <option>All Courses</option>
-                <option>BS Computer Science</option>
-                <option>BS Information Tech</option>
-                <option>BS Mech Eng</option>
+            <select name="course" class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[160px] appearance-none bg-none" onchange="this.form.submit()">
+                <option value="All Courses">All Courses</option>
+                <option value="BS Computer Science" {{ request('course') === 'BS Computer Science' ? 'selected' : '' }}>BS Computer Science</option>
+                <option value="BS Information Tech" {{ request('course') === 'BS Information Tech' ? 'selected' : '' }}>BS Information Tech</option>
+                <option value="BS Mech Eng" {{ request('course') === 'BS Mech Eng' ? 'selected' : '' }}>BS Mech Eng</option>
             </select>
-            <select class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[140px]">
-                <option>Year Level</option>
-                <option>1st Year</option>
-                <option>2nd Year</option>
-                <option>3rd Year</option>
-                <option>4th Year</option>
+            <select name="year_level" class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[140px] appearance-none bg-none" onchange="this.form.submit()">
+                <option value="Year Level">Year Level</option>
+                <option value="1st Year" {{ request('year_level') === '1st Year' ? 'selected' : '' }}>1st Year</option>
+                <option value="2nd Year" {{ request('year_level') === '2nd Year' ? 'selected' : '' }}>2nd Year</option>
+                <option value="3rd Year" {{ request('year_level') === '3rd Year' ? 'selected' : '' }}>3rd Year</option>
+                <option value="4th Year" {{ request('year_level') === '4th Year' ? 'selected' : '' }}>4th Year</option>
             </select>
-            <select class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[140px]">
-                <option>All Sections</option>
-                <option>Section A-1</option>
-                <option>Section B-4</option>
-                <option>Section C-1</option>
+            <select name="section" class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[140px] appearance-none bg-none" onchange="this.form.submit()">
+                <option value="All Sections">All Sections</option>
+                <option value="A-1" {{ request('section') === 'A-1' ? 'selected' : '' }}>Section A-1</option>
+                <option value="B-4" {{ request('section') === 'B-4' ? 'selected' : '' }}>Section B-4</option>
+                <option value="C-1" {{ request('section') === 'C-1' ? 'selected' : '' }}>Section C-1</option>
             </select>
         </div>
-        <button class="text-blue-600 font-semibold hover:underline text-sm">Clear Filters</button>
-    </div>
+        <div class="flex items-center gap-3 w-full md:w-auto">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search ID or Name..." class="rounded-lg border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500 w-full md:w-64">
+            <a href="{{ route('students.index') }}" class="text-blue-600 font-semibold hover:underline text-sm whitespace-nowrap">Clear Filters</a>
+        </div>
+    </form>
     <!-- END: Filter Bar -->
 </div>
 <!-- END: Content Header -->

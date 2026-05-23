@@ -64,14 +64,17 @@
 <!-- BEGIN: Table Section -->
 <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
     <!-- Table Filters -->
-    <div class="p-4 border-b border-slate-100 flex flex-wrap items-center gap-4">
+    <form method="GET" action="{{ route('subjects.index') }}" class="p-4 border-b border-slate-100 flex flex-wrap items-center gap-4">
         <div class="relative flex-1 min-w-[300px]">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             </span>
-            <input class="w-full border border-slate-200 rounded-lg py-2 pl-10 pr-4 focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Search subjects..." type="text"/>
+            <input name="search" value="{{ request('search') }}" class="w-full border border-slate-200 rounded-lg py-2 pl-10 pr-4 focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Search subjects..." type="text"/>
         </div>
-    </div>
+        @if(request()->has('search'))
+            <a href="{{ route('subjects.index') }}" class="text-blue-600 text-sm font-semibold hover:underline">Clear Search</a>
+        @endif
+    </form>
     <!-- Subjects Table -->
     <div class="overflow-x-auto">
         <table class="w-full text-left">

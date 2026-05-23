@@ -10,9 +10,17 @@ class SubjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $subjects = Subject::all();
+        $query = Subject::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('subject_code', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%");
+        }
+
+        $subjects = $query->get();
         return view('subjects.index', compact('subjects'));
     }
 

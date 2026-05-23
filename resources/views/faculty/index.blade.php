@@ -77,23 +77,25 @@
 <!-- BEGIN: Table Section Container -->
 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
     <!-- Filter Bar -->
-    <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+    <form method="GET" action="{{ route('faculty.index') }}" class="p-4 border-b border-gray-200 flex items-center justify-between">
         <div class="flex items-center gap-4">
-            <button class="flex items-center gap-2 text-gray-700 font-medium text-sm px-3 py-2">
+            <button type="button" class="flex items-center gap-2 text-gray-700 font-medium text-sm px-3 py-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
                 Filters:
             </button>
             <div class="relative">
-                <select class="appearance-none bg-gray-50 border border-gray-300 rounded-lg text-sm px-4 py-2 pr-10 focus:ring-blue-500 focus:border-blue-500">
-                    <option>All Department</option>
-                    @foreach($faculties->unique('department') as $f)
-                        <option>{{ $f->department }}</option>
+                <select name="department" onchange="this.form.submit()" class="appearance-none bg-none bg-gray-50 border border-gray-300 rounded-lg text-sm px-4 py-2 pr-10 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="All Department">All Department</option>
+                    @php $allDepts = \App\Models\Faculty::select('department')->distinct()->pluck('department'); @endphp
+                    @foreach($allDepts as $dept)
+                        <option value="{{ $dept }}" {{ request('department') === $dept ? 'selected' : '' }}>{{ $dept }}</option>
                     @endforeach
                 </select>
             </div>
         </div>
-        <button class="text-blue-600 font-semibold text-sm hover:underline">Clear Filters</button>
-    </div>
+        <a href="{{ route('faculty.index') }}" class="text-blue-600 font-semibold text-sm hover:underline">Clear Filters</a>
+    </form>
+
     <!-- Staff Table -->
     <div class="overflow-x-auto">
         <table class="w-full text-left">

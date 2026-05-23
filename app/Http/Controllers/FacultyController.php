@@ -12,9 +12,15 @@ class FacultyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $faculties = Faculty::with('user')->get();
+        $query = Faculty::with('user');
+
+        if ($request->filled('department') && $request->department !== 'All Department') {
+            $query->where('department', $request->department);
+        }
+
+        $faculties = $query->get();
         return view('faculty.index', compact('faculties'));
     }
 
