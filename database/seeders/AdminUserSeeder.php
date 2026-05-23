@@ -21,18 +21,32 @@ class AdminUserSeeder extends Seeder
             'role' => 'admin',
         ]);
         
-        User::create([
+        $facultyUser = User::create([
             'name' => 'Faculty User',
             'email' => 'faculty@cpc.edu',
             'password' => Hash::make('password'),
             'role' => 'faculty',
         ]);
+
+        \App\Models\Faculty::create([
+            'user_id' => $facultyUser->id,
+            'employee_id' => 'FAC-2026-001',
+            'department' => 'College of Computer Studies',
+        ]);
         
-        User::create([
+        $studentUser = User::create([
             'name' => 'Student User',
             'email' => 'student@cpc.edu',
             'password' => Hash::make('password'),
             'role' => 'student',
+        ]);
+
+        \App\Models\Student::create([
+            'user_id' => $studentUser->id,
+            'student_id' => '20230753',
+            'course' => 'BS Information Tech',
+            'year_level' => '3rd Year',
+            'section' => 'A-1',
         ]);
     }
 }

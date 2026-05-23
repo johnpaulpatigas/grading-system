@@ -14,7 +14,15 @@ class GradeController extends Controller
     public function index(Request $request)
     {
         $subjects = Subject::all();
-        $selectedSubjectId = $request->get('subject_id', $subjects->first()?->id);
+        if ($subjects->isEmpty()) {
+            return view('grading.index', [
+                'students' => collect(),
+                'subjects' => collect(),
+                'selectedSubjectId' => null
+            ]);
+        }
+
+        $selectedSubjectId = $request->get('subject_id', $subjects->first()->id);
         
         $students = Student::with(['user', 'grades' => function($query) use ($selectedSubjectId) {
             $query->where('subject_id', $selectedSubjectId);
@@ -26,6 +34,10 @@ class GradeController extends Controller
     public function encode(Student $student, Request $request)
     {
         $subjectId = $request->get('subject_id');
+        if (!$subjectId) {
+            return redirect()->route('grading.index')->with('error', 'Please select a subject first.');
+        }
+
         $subject = Subject::findOrFail($subjectId);
         $grade = Grade::where('student_id', $student->id)->where('subject_id', $subjectId)->first();
         
@@ -42,9 +54,12 @@ class GradeController extends Controller
         ]);
 
         $faculty = Auth::user()->faculty;
-        if (!$faculty && Auth::user()->isAdmin()) {
-            // For admin, we just pick the first faculty or handle accordingly
+        if (!$faculty) {
             $faculty = Faculty::first();
+        }
+
+        if (!$faculty) {
+            return back()->with('error', 'No faculty record found to associate with this grade. Please create a faculty record first.');
         }
 
         Grade::updateOrCreate(
