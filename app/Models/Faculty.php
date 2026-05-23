@@ -17,6 +17,11 @@ class Faculty extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class);
+    }
+
     public function grades()
     {
         return $this->hasMany(Grade::class);

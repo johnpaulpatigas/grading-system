@@ -12,6 +12,11 @@ class Subject extends Model
         'units',
     ];
 
+    public function faculties()
+    {
+        return $this->belongsToMany(Faculty::class);
+    }
+
     public function grades()
     {
         return $this->hasMany(Grade::class);

@@ -13,7 +13,14 @@ class GradeController extends Controller
 {
     public function index(Request $request)
     {
-        $subjects = Subject::all();
+        $user = Auth::user();
+        
+        if ($user->isAdmin()) {
+            $subjects = Subject::all();
+        } else {
+            $subjects = $user->faculty->subjects;
+        }
+
         if ($subjects->isEmpty()) {
             return view('grading.index', [
                 'students' => collect(),
