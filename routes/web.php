@@ -30,6 +30,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('students', StudentController::class);
         Route::resource('faculty', FacultyController::class);
         Route::resource('subjects', SubjectController::class);
+
+        // Enrollment
+        Route::get('/enrollment/create', [\App\Http\Controllers\EnrollmentController::class, 'create'])->name('enrollments.create');
+        Route::post('/enrollment/store', [\App\Http\Controllers\EnrollmentController::class, 'store'])->name('enrollments.store');
     });
 
     // Admin & Faculty: Grading Access

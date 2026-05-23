@@ -70,6 +70,15 @@
                 <span>Reports</span>
             </a>
         </nav>
+        <!-- Action Button -->
+        @if(Auth::user()->isAdmin())
+        <div class="px-4 mb-6">
+            <a href="{{ route('enrollments.create') }}" class="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-900/20">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                New Enrollment
+            </a>
+        </div>
+        @endif
         <!-- Sidebar Footer -->
         <div class="p-4 border-t border-gray-800" data-purpose="sidebar-footer">
             <a class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 hover:text-white rounded-lg transition-colors" href="#">

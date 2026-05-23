@@ -18,10 +18,16 @@
             <h2 class="text-3xl font-bold text-gray-900 mb-1">{{ $student->user->name }}</h2>
             <p class="text-gray-500">Institutional ID: <span class="font-mono font-bold text-blue-600">{{ $student->student_id }}</span></p>
         </div>
-        <a href="{{ route('students.edit', $student) }}" class="px-5 py-2.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg font-semibold hover:bg-amber-100 transition-colors flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-            Edit Profile
-        </a>
+        <div class="flex gap-3">
+            <a href="{{ route('enrollments.create', ['student_id' => $student->id]) }}" class="px-5 py-2.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-semibold hover:bg-blue-100 transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                Manage Enrollment
+            </a>
+            <a href="{{ route('students.edit', $student) }}" class="px-5 py-2.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg font-semibold hover:bg-amber-100 transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                Edit Profile
+            </a>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
