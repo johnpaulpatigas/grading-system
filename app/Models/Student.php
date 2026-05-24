@@ -43,9 +43,9 @@ class Student extends Model
         $totalUnits = $grades->sum(fn($g) => $g->subject->units);
         $gpa = $totalUnits > 0 ? $totalWeightedPoints / $totalUnits : 0;
 
-        if ($gpa <= 2.5) {
+        if ($gpa >= 80) {
             $this->status = 'Regular';
-        } elseif ($gpa <= 3.0) {
+        } elseif ($gpa >= 75) {
             $this->status = 'Probation';
         } else {
             $this->status = 'Irregular';
