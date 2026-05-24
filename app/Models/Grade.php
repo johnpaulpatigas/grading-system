@@ -23,15 +23,16 @@ class Grade extends Model
         parent::boot();
 
         static::saving(function ($grade) {
-            $prelim = $grade->prelim ?? 0;
-            $midterm = $grade->midterm ?? 0;
-            $final = $grade->final ?? 0;
-            
-            // 30% Prelim, 30% Midterm, 40% Final
-            $grade->average = ($prelim * 0.3) + ($midterm * 0.3) + ($final * 0.4);
-            
-            if (!$grade->remarks) {
-                $grade->remarks = $grade->average >= 75 ? 'Pass' : 'Fail';
+            if ($grade->prelim !== null && $grade->midterm !== null && $grade->final !== null) {
+                // 30% Prelim, 30% Midterm, 40% Final
+                $grade->average = ($grade->prelim * 0.3) + ($grade->midterm * 0.3) + ($grade->final * 0.4);
+                
+                if (!$grade->remarks || $grade->remarks === 'In Progress') {
+                    $grade->remarks = $grade->average >= 75 ? 'Pass' : 'Fail';
+                }
+            } else {
+                $grade->average = null;
+                $grade->remarks = 'In Progress';
             }
         });
 
