@@ -42,14 +42,20 @@ class SubjectController extends Controller
             'description' => 'required|string|max:255',
             'units' => 'required|numeric|min:0.5',
             'max_students' => 'nullable|integer|min:1',
+            'prerequisite_ids' => 'nullable|array',
+            'prerequisite_ids.*' => 'exists:subjects,id',
         ]);
 
-        Subject::create([
+        $subject = Subject::create([
             'subject_code' => $request->subject_code,
             'description' => $request->description,
             'units' => $request->units,
             'max_students' => $request->max_students ?? 40,
         ]);
+
+        if ($request->has('prerequisite_ids')) {
+            $subject->prerequisites()->sync($request->prerequisite_ids);
+        }
 
         return redirect()->route('subjects.index')->with('success', 'Subject created successfully.');
     }
@@ -80,7 +86,19 @@ class SubjectController extends Controller
             'description' => 'required|string|max:255',
             'units' => 'required|numeric|min:0.5',
             'max_students' => 'nullable|integer|min:1',
+            'prerequisite_ids' => 'nullable|array',
+            'prerequisite_ids.*' => 'exists:subjects,id',
         ]);
+
+        // Check for circular prerequisites
+        if ($request->has('prerequisite_ids')) {
+            foreach ($request->prerequisite_ids as $prereqId) {
+                if ($this->wouldCreateLoop($subject->id, $prereqId)) {
+                    $prereq = Subject::find($prereqId);
+                    return back()->with('error', "Cannot add {$prereq->subject_code} as a prerequisite. It would create a circular dependency loop.")->withInput();
+                }
+            }
+        }
 
         $subject->update([
             'subject_code' => $request->subject_code,
@@ -89,7 +107,28 @@ class SubjectController extends Controller
             'max_students' => $request->max_students ?? 40,
         ]);
 
+        if ($request->has('prerequisite_ids')) {
+            $subject->prerequisites()->sync($request->prerequisite_ids);
+        }
+
         return redirect()->route('subjects.index')->with('success', 'Subject updated successfully.');
+    }
+
+    private function wouldCreateLoop($subjectId, $prerequisiteId, $visited = [])
+    {
+        if ($subjectId == $prerequisiteId) return true;
+        if (in_array($prerequisiteId, $visited)) return false;
+
+        $visited[] = $prerequisiteId;
+        $prereq = Subject::find($prerequisiteId);
+        
+        foreach ($prereq->prerequisites as $p) {
+            if ($this->wouldCreateLoop($subjectId, $p->id, $visited)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
