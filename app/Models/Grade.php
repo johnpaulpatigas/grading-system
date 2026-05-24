@@ -56,6 +56,15 @@ class Grade extends Model
                 'new_values' => $grade->getChanges(),
             ]);
         });
+
+        static::deleted(function ($grade) {
+            GradeLog::create([
+                'grade_id' => $grade->id,
+                'user_id' => auth()->id() ?? 1,
+                'action' => 'Deleted',
+                'old_values' => $grade->getAttributes(),
+            ]);
+        });
     }
 
     public function student()
