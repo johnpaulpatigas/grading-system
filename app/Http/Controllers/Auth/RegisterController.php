@@ -22,11 +22,20 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'student_id' => ['required', 'string', 'max:20', 'unique:students'],
+            'student_id' => ['required', 'string', 'max:20'],
             'course' => ['required', 'string', 'max:100'],
             'year_level' => ['required', 'string', 'max:20'],
             'section' => ['required', 'string', 'max:20'],
         ]);
+
+        // Find existing student record that hasn't been "claimed" yet
+        $student = Student::where('student_id', $request->student_id)
+            ->whereNull('user_id')
+            ->first();
+
+        if (!$student) {
+            return back()->with('error', 'Invalid Student ID or the account has already been registered. Please contact the administrator.')->withInput();
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -35,9 +44,9 @@ class RegisterController extends Controller
             'role' => 'student',
         ]);
 
-        Student::create([
+        // Link the user to the existing student record
+        $student->update([
             'user_id' => $user->id,
-            'student_id' => $request->student_id,
             'course' => $request->course,
             'year_level' => $request->year_level,
             'section' => $request->section,
