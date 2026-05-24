@@ -141,22 +141,40 @@ class GradeController extends Controller
     {
         $request->validate([
             'subject_id' => 'required|exists:subjects,id',
+            'semester' => 'nullable|string',
+            'academic_year' => 'nullable|string',
         ]);
 
         $subjectId = $request->subject_id;
+        $semester = $request->get('semester', '1st Semester');
+        $academicYear = $request->get('academic_year', '2026');
         $facultyId = Auth::user()->faculty?->id;
 
         if (!$facultyId && !Auth::user()->isAdmin()) {
             return back()->with('error', 'Unauthorized.');
         }
 
-        $query = Grade::where('subject_id', $subjectId);
+        // Check for incomplete grades before finalizing
+        $incompleteGrades = Grade::where('subject_id', $subjectId)
+            ->where('semester', $semester)
+            ->where('academic_year', $academicYear)
+            ->where('remarks', 'In Progress')
+            ->count();
+
+        if ($incompleteGrades > 0) {
+            return back()->with('error', "Cannot finalize. There are $incompleteGrades students with incomplete grade components.");
+        }
+
+        $query = Grade::where('subject_id', $subjectId)
+            ->where('semester', $semester)
+            ->where('academic_year', $academicYear);
+            
         if (!Auth::user()->isAdmin()) {
             $query->where('faculty_id', $facultyId);
         }
 
         $query->update(['status' => 'Final']);
 
-        return redirect()->route('grading.index', ['subject_id' => $subjectId])->with('success', 'Grades have been finalized successfully. They can no longer be edited.');
+        return redirect()->route('grading.index', ['subject_id' => $subjectId])->with('success', 'Grades have been finalized successfully.');
     }
 }
