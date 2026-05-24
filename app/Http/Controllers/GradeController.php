@@ -91,6 +91,17 @@ class GradeController extends Controller
             return back()->with('error', 'No faculty record found to associate with this grade. Please create a faculty record first.');
         }
 
+        $subject = Subject::findOrFail($request->subject_id);
+        $student = Student::findOrFail($request->student_id);
+
+        // Enforce Prerequisites check before saving grade
+        $passedSubjects = $student->grades()->where('average', '>=', 75)->pluck('subject_id')->toArray();
+        foreach ($subject->prerequisites as $prereq) {
+            if (!in_array($prereq->id, $passedSubjects)) {
+                return back()->with('error', "Cannot save grade. Student has not passed prerequisite: {$prereq->subject_code}");
+            }
+        }
+
         $semester = $request->get('semester', '1st Semester');
         $academicYear = $request->get('academic_year', '2026');
 
