@@ -41,6 +41,21 @@
                 <input type="hidden" name="student_id" value="{{ $student->id }}">
                 <input type="hidden" name="subject_id" value="{{ $subject->id }}">
 
+            @if(Auth::user()->isAdmin() && $faculties->isNotEmpty())
+            <!-- Faculty Selection (Admin Only) -->
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="faculty_id">Assigned Faculty</label>
+                <select class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 text-sm bg-gray-50/50 appearance-none bg-none bg-no-repeat bg-[right_1rem_center]" id="faculty_id" name="faculty_id" required>
+                    @foreach($faculties as $fac)
+                        <option value="{{ $fac->id }}" {{ (old('faculty_id', $grade?->faculty_id) == $fac->id) ? 'selected' : '' }}>
+                            {{ $fac->user->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('faculty_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-6">
                 <!-- Prelim -->
                 <div class="space-y-1.5">

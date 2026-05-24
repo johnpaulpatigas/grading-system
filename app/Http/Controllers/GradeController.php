@@ -48,13 +48,19 @@ class GradeController extends Controller
         }
 
         $subject = Subject::findOrFail($subjectId);
-        $grade = Grade::where('student_id', $student->id)->where('subject_id', $subjectId)->first();
+        $grade = Grade::where('student_id', $student->id)
+            ->where('subject_id', $subjectId)
+            ->where('semester', $request->get('semester', '1st Semester'))
+            ->where('academic_year', $request->get('academic_year', '2026'))
+            ->first();
         
         if ($grade && $grade->status === 'Final' && !Auth::user()->isAdmin()) {
             return redirect()->route('grading.index', ['subject_id' => $subjectId])->with('error', 'Grades for this subject have been finalized and cannot be edited.');
         }
 
-        return view('grading.encode', compact('student', 'subject', 'grade'));
+        $faculties = Auth::user()->isAdmin() ? Faculty::with('user')->get() : collect();
+
+        return view('grading.encode', compact('student', 'subject', 'grade', 'faculties'));
     }
 
     public function store(Request $request)
@@ -62,18 +68,26 @@ class GradeController extends Controller
         $request->validate([
             'student_id' => 'required|exists:students,id',
             'subject_id' => 'required|exists:subjects,id',
+            'faculty_id' => 'nullable|exists:faculties,id',
             'prelim' => 'nullable|numeric|min:0|max:100',
             'midterm' => 'nullable|numeric|min:0|max:100',
             'final' => 'nullable|numeric|min:0|max:100',
             'remarks' => 'nullable|string|max:255',
         ]);
 
-        $faculty = Auth::user()->faculty;
-        if (!$faculty) {
-            $faculty = Faculty::first();
+        $facultyId = $request->faculty_id;
+        
+        if (!$facultyId) {
+            $facultyId = Auth::user()->faculty?->id;
         }
 
-        if (!$faculty) {
+        if (!$facultyId && Auth::user()->isAdmin()) {
+            // If admin and no faculty selected, we can fallback to the first one but ideally we'd want them to pick
+            // For now, let's keep it as is but the view change will help
+            $facultyId = Faculty::first()?->id;
+        }
+
+        if (!$facultyId) {
             return back()->with('error', 'No faculty record found to associate with this grade. Please create a faculty record first.');
         }
 
@@ -99,7 +113,7 @@ class GradeController extends Controller
                 'academic_year' => $academicYear,
             ],
             [
-                'faculty_id' => $faculty->id,
+                'faculty_id' => $facultyId,
                 'prelim' => $request->prelim,
                 'midterm' => $request->midterm,
                 'final' => $request->final,
