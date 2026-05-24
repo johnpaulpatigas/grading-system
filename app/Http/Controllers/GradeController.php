@@ -94,6 +94,13 @@ class GradeController extends Controller
         $subject = Subject::findOrFail($request->subject_id);
         $student = Student::findOrFail($request->student_id);
 
+        // Validate that Faculty is assigned to this Subject
+        $isAssigned = $subject->faculties()->where('faculty_id', $facultyId)->exists();
+        if (!$isAssigned) {
+            $facultyName = Faculty::find($facultyId)?->user?->name ?? 'Selected Faculty';
+            return back()->with('error', "{$facultyName} is not assigned to teach {$subject->subject_code}.");
+        }
+
         // Enforce Prerequisites check before saving grade
         $passedSubjects = $student->grades()->where('average', '>=', 75)->pluck('subject_id')->toArray();
         foreach ($subject->prerequisites as $prereq) {
