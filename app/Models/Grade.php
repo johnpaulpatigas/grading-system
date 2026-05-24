@@ -25,6 +25,13 @@ class Grade extends Model
         parent::boot();
 
         static::saving(function ($grade) {
+            // Prevent modification of finalized grades unless admin
+            if ($grade->exists && $grade->getOriginal('status') === 'Final' && !auth()->user()?->isAdmin()) {
+                if (!$grade->isDirty('status')) { // Allow changing status if authorized (though status update is usually separate)
+                     return false; 
+                }
+            }
+
             if ($grade->prelim !== null && $grade->midterm !== null && $grade->final !== null) {
                 // 30% Prelim, 30% Midterm, 40% Final
                 $grade->average = ($grade->prelim * 0.3) + ($grade->midterm * 0.3) + ($grade->final * 0.4);
@@ -55,6 +62,12 @@ class Grade extends Model
                 'old_values' => $grade->getOriginal(),
                 'new_values' => $grade->getChanges(),
             ]);
+        });
+
+        static::deleting(function ($grade) {
+            if ($grade->status === 'Final' && !auth()->user()?->isAdmin()) {
+                return false;
+            }
         });
 
         static::deleted(function ($grade) {
