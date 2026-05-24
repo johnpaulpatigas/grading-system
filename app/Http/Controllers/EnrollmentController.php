@@ -29,19 +29,32 @@ class EnrollmentController extends Controller
         return DB::transaction(function() use ($request) {
             $student = Student::findOrFail($request->student_id);
             
+            $semester = $request->get('semester', '1st Semester');
+            $academicYear = $request->get('academic_year', '2026');
+
             // Enforce Prerequisites and Capacity with Lock
             $subjectsToEnroll = Subject::whereIn('id', $request->subject_ids)
                 ->lockForUpdate()
-                ->withCount('students')
+                ->withCount(['students' => function ($query) use ($semester, $academicYear) {
+                    $query->where('enrollments.semester', $semester)
+                          ->where('enrollments.academic_year', $academicYear);
+                }])
                 ->get();
 
             $passedSubjects = $student->grades()->where('average', '>=', 75)->pluck('subject_id')->toArray();
+            
+            // Get current term enrolled subject IDs to avoid double counting or failing capacity check if re-enrolling
+            $currentlyEnrolledSubjectIds = $student->subjects()
+                ->where('enrollments.semester', $semester)
+                ->where('enrollments.academic_year', $academicYear)
+                ->pluck('subjects.id')->toArray();
+
             $missingPrerequisites = [];
             $fullSubjects = [];
 
             foreach ($subjectsToEnroll as $subject) {
-                // Check Capacity (only if they are not already enrolled)
-                if (!$student->subjects->contains($subject->id) && $subject->students_count >= $subject->max_students) {
+                // Check Capacity (only if they are not already enrolled in this term)
+                if (!in_array($subject->id, $currentlyEnrolledSubjectIds) && $subject->students_count >= $subject->max_students) {
                     $fullSubjects[] = "{$subject->subject_code} (Max: {$subject->max_students})";
                 }
 
@@ -65,9 +78,6 @@ class EnrollmentController extends Controller
             if (!empty($errorMessages)) {
                 return back()->with('error', 'Enrollment failed: ' . implode(' | ', $errorMessages));
             }
-
-            $semester = $request->get('semester', '1st Semester');
-            $academicYear = $request->get('academic_year', '2026');
 
             $syncData = [];
             foreach ($request->subject_ids as $id) {
