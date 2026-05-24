@@ -40,6 +40,19 @@
                     <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="units" name="units" placeholder="e.g. 3" type="number" min="1" max="10" value="{{ old('units', $subject->units) }}" required/>
                     @error('units') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
+                
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="faculty_ids">Assigned Faculty</label>
+                    <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="faculty_ids" name="faculty_ids[]" multiple>
+                        @foreach($faculties as $faculty)
+                            <option value="{{ $faculty->id }}" {{ in_array($faculty->id, old('faculty_ids', $subject->faculties->pluck('id')->toArray())) ? 'selected' : '' }}>
+                                {{ $faculty->user->name }} ({{ $faculty->department }})
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple faculties.</p>
+                    @error('faculty_ids') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
             </div>
 
             <div class="pt-6 flex justify-end">

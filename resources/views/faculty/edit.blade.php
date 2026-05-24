@@ -62,6 +62,19 @@
                 </div>
             </div>
 
+            <div class="space-y-1.5 pt-6">
+                <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="subject_ids">Assigned Subjects</label>
+                <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="subject_ids" name="subject_ids[]" multiple>
+                    @foreach($subjects as $subject)
+                        <option value="{{ $subject->id }}" {{ in_array($subject->id, old('subject_ids', $faculty->subjects->pluck('id')->toArray())) ? 'selected' : '' }}>
+                            {{ $subject->subject_code }} - {{ $subject->description }}
+                        </option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-gray-500 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple subjects.</p>
+                @error('subject_ids') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
             <div class="pt-10 flex justify-end">
                 <button class="bg-[#0047cc] hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center space-x-2 transition-all" type="submit">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>

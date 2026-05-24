@@ -29,7 +29,8 @@ class SubjectController extends Controller
      */
     public function create()
     {
-        return view('subjects.create');
+        $faculties = \App\Models\Faculty::with('user')->get();
+        return view('subjects.create', compact('faculties'));
     }
 
     /**
@@ -44,6 +45,8 @@ class SubjectController extends Controller
             'max_students' => 'nullable|integer|min:1',
             'prerequisite_ids' => 'nullable|array',
             'prerequisite_ids.*' => 'exists:subjects,id',
+            'faculty_ids' => 'nullable|array',
+            'faculty_ids.*' => 'exists:faculties,id',
         ]);
 
         $subject = Subject::create([
@@ -55,6 +58,10 @@ class SubjectController extends Controller
 
         if ($request->has('prerequisite_ids')) {
             $subject->prerequisites()->sync($request->prerequisite_ids);
+        }
+
+        if ($request->has('faculty_ids')) {
+            $subject->faculties()->sync($request->faculty_ids);
         }
 
         return redirect()->route('subjects.index')->with('success', 'Subject created successfully.');
@@ -73,7 +80,8 @@ class SubjectController extends Controller
      */
     public function edit(Subject $subject)
     {
-        return view('subjects.edit', compact('subject'));
+        $faculties = \App\Models\Faculty::with('user')->get();
+        return view('subjects.edit', compact('subject', 'faculties'));
     }
 
     /**
@@ -88,6 +96,8 @@ class SubjectController extends Controller
             'max_students' => 'nullable|integer|min:1',
             'prerequisite_ids' => 'nullable|array',
             'prerequisite_ids.*' => 'exists:subjects,id',
+            'faculty_ids' => 'nullable|array',
+            'faculty_ids.*' => 'exists:faculties,id',
         ]);
 
         // Check for circular prerequisites
@@ -109,6 +119,12 @@ class SubjectController extends Controller
 
         if ($request->has('prerequisite_ids')) {
             $subject->prerequisites()->sync($request->prerequisite_ids);
+        }
+        
+        if ($request->has('faculty_ids')) {
+            $subject->faculties()->sync($request->faculty_ids);
+        } else {
+            $subject->faculties()->detach();
         }
 
         return redirect()->route('subjects.index')->with('success', 'Subject updated successfully.');

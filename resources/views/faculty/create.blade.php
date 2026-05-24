@@ -72,6 +72,19 @@
                     </div>
                 </div>
 
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="subject_ids">Assigned Subjects</label>
+                    <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="subject_ids" name="subject_ids[]" multiple>
+                        @foreach($subjects as $subject)
+                            <option value="{{ $subject->id }}" {{ in_array($subject->id, old('subject_ids', [])) ? 'selected' : '' }}>
+                                {{ $subject->subject_code }} - {{ $subject->description }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple subjects.</p>
+                    @error('subject_ids') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
                 <!-- Form Action Footer -->
                 <div class="pt-10 flex justify-end">
                     <button class="bg-[#0047cc] hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center space-x-2 transition-all" type="submit">

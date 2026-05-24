@@ -79,6 +79,20 @@
                             <input class="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 bg-gray-50/50 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all" name="description" placeholder="Introduction to Computer Science" type="text" value="{{ old('description') }}" required/>
                             @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
+
+                        <!-- Assigned Faculty -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Assigned Faculty</label>
+                            <select class="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 bg-gray-50/50 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all" name="faculty_ids[]" multiple>
+                                @foreach($faculties as $faculty)
+                                    <option value="{{ $faculty->id }}" {{ in_array($faculty->id, old('faculty_ids', [])) ? 'selected' : '' }}>
+                                        {{ $faculty->user->name }} ({{ $faculty->department }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple faculties.</p>
+                            @error('faculty_ids') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
                     </div>
                 </section>
                 <!-- END: Core Information Card -->

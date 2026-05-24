@@ -29,7 +29,8 @@ class FacultyController extends Controller
      */
     public function create()
     {
-        return view('faculty.create');
+        $subjects = \App\Models\Subject::all();
+        return view('faculty.create', compact('subjects'));
     }
 
     /**
@@ -42,6 +43,8 @@ class FacultyController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'employee_id' => 'required|string|max:20|unique:faculties',
             'department' => 'required|string|max:100',
+            'subject_ids' => 'nullable|array',
+            'subject_ids.*' => 'exists:subjects,id',
         ]);
 
         $user = User::create([
@@ -51,11 +54,15 @@ class FacultyController extends Controller
             'role' => 'faculty',
         ]);
 
-        Faculty::create([
+        $faculty = Faculty::create([
             'user_id' => $user->id,
             'employee_id' => $request->employee_id,
             'department' => $request->department,
         ]);
+
+        if ($request->has('subject_ids')) {
+            $faculty->subjects()->sync($request->subject_ids);
+        }
 
         return redirect()->route('faculty.index')->with('success', 'Faculty created successfully.');
     }
@@ -73,7 +80,8 @@ class FacultyController extends Controller
      */
     public function edit(Faculty $faculty)
     {
-        return view('faculty.edit', compact('faculty'));
+        $subjects = \App\Models\Subject::all();
+        return view('faculty.edit', compact('faculty', 'subjects'));
     }
 
     /**
@@ -86,6 +94,8 @@ class FacultyController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $faculty->user_id,
             'employee_id' => 'required|string|max:20|unique:faculties,employee_id,' . $faculty->id,
             'department' => 'required|string|max:100',
+            'subject_ids' => 'nullable|array',
+            'subject_ids.*' => 'exists:subjects,id',
         ]);
 
         $faculty->user->update([
@@ -97,6 +107,12 @@ class FacultyController extends Controller
             'employee_id' => $request->employee_id,
             'department' => $request->department,
         ]);
+
+        if ($request->has('subject_ids')) {
+            $faculty->subjects()->sync($request->subject_ids);
+        } else {
+            $faculty->subjects()->detach();
+        }
 
         return redirect()->route('faculty.index')->with('success', 'Faculty updated successfully.');
     }
