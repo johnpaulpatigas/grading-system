@@ -139,9 +139,11 @@ class GradeController extends Controller
             ]
         );
 
-        $gradeRecord->student->refreshAcademicStatus();
+        if ($gradeRecord->average !== null) {
+            $gradeRecord->student->refreshAcademicStatus();
+        }
 
-        return redirect()->route('grading.index', ['subject_id' => $request->subject_id])->with('success', 'Grade saved and academic status refreshed.');
+        return redirect()->route('grading.index', ['subject_id' => $request->subject_id])->with('success', 'Grade saved.');
     }
 
     public function submit(Request $request)
