@@ -48,6 +48,11 @@ class GradeController extends Controller
         }
 
         $subject = Subject::findOrFail($subjectId);
+
+        if (!Auth::user()->isAdmin() && !Auth::user()->faculty->subjects->contains($subjectId)) {
+            return redirect()->route('grading.index')->with('error', 'You are not assigned to this subject.');
+        }
+
         $grade = Grade::where('student_id', $student->id)
             ->where('subject_id', $subjectId)
             ->where('semester', $request->get('semester', '1st Semester'))
@@ -77,7 +82,7 @@ class GradeController extends Controller
 
         $facultyId = $request->faculty_id;
         
-        if (!$facultyId) {
+        if (!Auth::user()->isAdmin()) {
             $facultyId = Auth::user()->faculty?->id;
         }
 
@@ -157,10 +162,12 @@ class GradeController extends Controller
         $subjectId = $request->subject_id;
         $semester = $request->get('semester', '1st Semester');
         $academicYear = $request->get('academic_year', '2026');
-        $facultyId = Auth::user()->faculty?->id;
-
-        if (!$facultyId && !Auth::user()->isAdmin()) {
-            return back()->with('error', 'Unauthorized.');
+        
+        if (!Auth::user()->isAdmin()) {
+            $facultyId = Auth::user()->faculty?->id;
+            if (!$facultyId || !Auth::user()->faculty->subjects->contains($subjectId)) {
+                return back()->with('error', 'Unauthorized. You are not assigned to this subject.');
+            }
         }
 
         // Check for incomplete grades before finalizing
