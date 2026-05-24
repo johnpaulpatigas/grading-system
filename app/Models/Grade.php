@@ -10,6 +10,8 @@ class Grade extends Model
         'student_id',
         'subject_id',
         'faculty_id',
+        'semester',
+        'academic_year',
         'prelim',
         'midterm',
         'final',

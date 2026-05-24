@@ -77,15 +77,26 @@ class GradeController extends Controller
             return back()->with('error', 'No faculty record found to associate with this grade. Please create a faculty record first.');
         }
 
-        $existingGrade = Grade::where('student_id', $request->student_id)->where('subject_id', $request->subject_id)->first();
+        $semester = $request->get('semester', '1st Semester');
+        $academicYear = $request->get('academic_year', '2026');
+
+        $existingGrade = Grade::where([
+            'student_id' => $request->student_id,
+            'subject_id' => $request->subject_id,
+            'semester' => $semester,
+            'academic_year' => $academicYear
+        ])->first();
+        
         if ($existingGrade && $existingGrade->status === 'Final' && !Auth::user()->isAdmin()) {
-            return back()->with('error', 'Grades for this subject have been finalized and cannot be edited.');
+            return back()->with('error', 'Grades for this subject and term have been finalized and cannot be edited.');
         }
 
         $gradeRecord = Grade::updateOrCreate(
             [
                 'student_id' => $request->student_id,
                 'subject_id' => $request->subject_id,
+                'semester' => $semester,
+                'academic_year' => $academicYear,
             ],
             [
                 'faculty_id' => $faculty->id,
