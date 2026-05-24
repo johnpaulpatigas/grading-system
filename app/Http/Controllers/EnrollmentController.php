@@ -60,9 +60,35 @@ class EnrollmentController extends Controller
             return back()->with('error', 'Enrollment failed: ' . implode(' | ', $errorMessages));
         }
 
-        $student->subjects()->sync($request->subject_ids);
+        $semester = $request->get('semester', '1st Semester');
+        $academicYear = $request->get('academic_year', '2026');
+
+        $syncData = [];
+        foreach ($request->subject_ids as $id) {
+            $syncData[$id] = [
+                'semester' => $semester,
+                'academic_year' => $academicYear
+            ];
+        }
+
+        // We only want to sync for the CURRENT semester/year to avoid wiping history
+        // First, get other enrollments to preserve them
+        $otherEnrollments = $student->subjects()
+            ->where(function($query) use ($semester, $academicYear) {
+                $query->where('semester', '!=', $semester)
+                      ->orWhere('academic_year', '!=', $academicYear);
+            })
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->id => [
+                    'semester' => $item->pivot->semester,
+                    'academic_year' => $item->pivot->academic_year
+                ]];
+            })->toArray();
+
+        $student->subjects()->sync($syncData + $otherEnrollments);
 
         return redirect()->route('students.show', $student->id)
-            ->with('success', 'Enrollment updated successfully.');
+            ->with('success', "Enrollment updated successfully for $semester AY $academicYear.");
     }
 }
