@@ -3,6 +3,14 @@
 @section('title', 'Report Generation')
 
 @section('content')
+@if(Auth::user()->isAdmin())
+<nav class="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+    <a href="{{ route('reports.index') }}" class="flex items-center hover:text-gray-800 transition-colors">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        Back to Selection
+    </a>
+</nav>
+@endif
 <div class="flex justify-between items-end mb-8">
     <div>
         <h2 class="text-3xl font-bold text-slate-800">Report Generation</h2>
@@ -45,11 +53,11 @@
         <div class="space-y-6">
             <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Student Name</p>
-                <p class="text-lg font-bold text-slate-800 uppercase">{{ Auth::user()->name }}</p>
+                <p class="text-lg font-bold text-slate-800 uppercase">{{ $student->user->name }}</p>
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Student ID Number</p>
-                <p class="text-xl font-bold text-slate-700 tracking-wider">{{ Auth::user()->student->student_id ?? 'N/A' }}</p>
+                <p class="text-xl font-bold text-slate-700 tracking-wider">{{ $student->student_id ?? 'N/A' }}</p>
             </div>
         </div>
         <div class="space-y-6">
@@ -65,7 +73,7 @@
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Degree Program</p>
-                <p class="font-bold text-slate-800 leading-tight">{{ Auth::user()->student->course ?? 'Not Assigned' }}</p>
+                <p class="font-bold text-slate-800 leading-tight">{{ $student->course ?? 'Not Assigned' }}</p>
             </div>
         </div>
     </div>
@@ -84,15 +92,15 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                @forelse(Auth::user()->student->grades ?? [] as $grade)
+                @forelse($student->grades ?? [] as $grade)
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="py-5 px-6 font-bold text-blue-700 text-sm">{{ $grade->subject->subject_code }}</td>
                     <td class="py-5 px-6 text-sm text-slate-700">{{ $grade->subject->description }}</td>
                     <td class="py-5 px-6 text-sm text-center text-slate-600">{{ number_format($grade->subject->units, 1) }}</td>
-                    <td class="py-5 px-6 font-bold text-lg text-center text-slate-800">{{ number_format($grade->grade, 2) }}</td>
+                    <td class="py-5 px-6 font-bold text-lg text-center text-slate-800">{{ number_format($grade->average, 2) }}</td>
                     <td class="py-5 px-6 text-center">
-                        <span class="inline-flex items-center px-3 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700 uppercase tracking-wider border border-green-200">
-                            {{ $grade->remarks ?? 'Pass' }}
+                        <span class="inline-flex items-center px-3 py-0.5 rounded-full text-[10px] font-bold {{ ($grade->average >= 75) ? 'bg-green-100 text-green-700 border-green-200' : 'bg-red-100 text-red-700 border-red-200' }} uppercase tracking-wider border">
+                            {{ $grade->remarks ?? ($grade->average >= 75 ? 'Pass' : 'Fail') }}
                         </span>
                     </td>
                 </tr>
@@ -102,6 +110,29 @@
                 </tr>
                 @endforelse
             </tbody>
+            @if($student && $student->grades->isNotEmpty())
+            <tfoot class="bg-gray-50 border-t-2 border-slate-800">
+                <tr>
+                    <td colspan="2" class="py-4 px-6 text-sm font-bold text-slate-800 text-right uppercase tracking-wider">Total Academic Units</td>
+                    <td class="py-4 px-6 text-sm font-bold text-center text-slate-800">
+                        {{ number_format($student->grades->sum(fn($g) => $g->subject->units), 1) }}
+                    </td>
+                    <td colspan="2" class="py-4 px-6"></td>
+                </tr>
+                <tr class="bg-slate-100">
+                    <td colspan="2" class="py-6 px-6 text-base font-black text-slate-900 text-right uppercase tracking-[0.2em]">General Weighted Average (GWA)</td>
+                    <td colspan="3" class="py-6 px-6 text-center">
+                        @php
+                            $grades = $student->grades;
+                            $twp = $grades->sum(fn($g) => $g->average * $g->subject->units);
+                            $tu = $grades->sum(fn($g) => $g->subject->units);
+                            $gwa = $tu > 0 ? $twp / $tu : 0;
+                        @endphp
+                        <span class="text-3xl font-black text-slate-900">{{ number_format($gwa, 2) }}</span>
+                    </td>
+                </tr>
+            </tfoot>
+            @endif
         </table>
     </div>
     <!-- END: Grades Table -->

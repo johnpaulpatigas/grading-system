@@ -100,8 +100,22 @@ class DashboardController extends Controller
         }
     }
 
-    public function reports()
+    public function reports(Request $request)
     {
-        return view('reports.index');
+        $user = Auth::user();
+        
+        if ($user->isAdmin()) {
+            $studentId = $request->get('student_id');
+            if ($studentId) {
+                $student = Student::with(['user', 'grades.subject'])->findOrFail($studentId);
+                return view('reports.index', compact('student'));
+            }
+            
+            $students = Student::with('user')->get();
+            return view('reports.selection', compact('students'));
+        }
+
+        $student = $user->student->load(['grades.subject']);
+        return view('reports.index', compact('student'));
     }
 }
