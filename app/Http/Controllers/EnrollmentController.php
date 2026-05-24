@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EnrollmentController extends Controller
 {
@@ -25,70 +26,76 @@ class EnrollmentController extends Controller
             'subject_ids.*' => 'exists:subjects,id',
         ]);
 
-        $student = Student::findOrFail($request->student_id);
-        
-        // Enforce Prerequisites and Capacity
-        $subjectsToEnroll = Subject::whereIn('id', $request->subject_ids)->withCount('students')->get();
-        $passedSubjects = $student->grades()->where('average', '>=', 75)->pluck('subject_id')->toArray();
-        $missingPrerequisites = [];
-        $fullSubjects = [];
+        return DB::transaction(function() use ($request) {
+            $student = Student::findOrFail($request->student_id);
+            
+            // Enforce Prerequisites and Capacity with Lock
+            $subjectsToEnroll = Subject::whereIn('id', $request->subject_ids)
+                ->lockForUpdate()
+                ->withCount('students')
+                ->get();
 
-        foreach ($subjectsToEnroll as $subject) {
-            // Check Capacity (only if they are not already enrolled)
-            if (!$student->subjects->contains($subject->id) && $subject->students_count >= $subject->max_students) {
-                $fullSubjects[] = "{$subject->subject_code} (Max: {$subject->max_students})";
-            }
+            $passedSubjects = $student->grades()->where('average', '>=', 75)->pluck('subject_id')->toArray();
+            $missingPrerequisites = [];
+            $fullSubjects = [];
 
-            // Check Prerequisites
-            $prerequisites = $subject->prerequisites;
-            foreach ($prerequisites as $prereq) {
-                if (!in_array($prereq->id, $passedSubjects)) {
-                    $missingPrerequisites[] = "{$subject->subject_code} requires passing {$prereq->subject_code}";
+            foreach ($subjectsToEnroll as $subject) {
+                // Check Capacity (only if they are not already enrolled)
+                if (!$student->subjects->contains($subject->id) && $subject->students_count >= $subject->max_students) {
+                    $fullSubjects[] = "{$subject->subject_code} (Max: {$subject->max_students})";
+                }
+
+                // Check Prerequisites
+                $prerequisites = $subject->prerequisites;
+                foreach ($prerequisites as $prereq) {
+                    if (!in_array($prereq->id, $passedSubjects)) {
+                        $missingPrerequisites[] = "{$subject->subject_code} requires passing {$prereq->subject_code}";
+                    }
                 }
             }
-        }
 
-        $errorMessages = [];
-        if (!empty($fullSubjects)) {
-            $errorMessages[] = 'The following subjects are at full capacity: ' . implode(', ', $fullSubjects);
-        }
-        if (!empty($missingPrerequisites)) {
-            $errorMessages[] = 'Missing prerequisites: ' . implode(', ', $missingPrerequisites);
-        }
+            $errorMessages = [];
+            if (!empty($fullSubjects)) {
+                $errorMessages[] = 'The following subjects are at full capacity: ' . implode(', ', $fullSubjects);
+            }
+            if (!empty($missingPrerequisites)) {
+                $errorMessages[] = 'Missing prerequisites: ' . implode(', ', $missingPrerequisites);
+            }
 
-        if (!empty($errorMessages)) {
-            return back()->with('error', 'Enrollment failed: ' . implode(' | ', $errorMessages));
-        }
+            if (!empty($errorMessages)) {
+                return back()->with('error', 'Enrollment failed: ' . implode(' | ', $errorMessages));
+            }
 
-        $semester = $request->get('semester', '1st Semester');
-        $academicYear = $request->get('academic_year', '2026');
+            $semester = $request->get('semester', '1st Semester');
+            $academicYear = $request->get('academic_year', '2026');
 
-        $syncData = [];
-        foreach ($request->subject_ids as $id) {
-            $syncData[$id] = [
-                'semester' => $semester,
-                'academic_year' => $academicYear
-            ];
-        }
+            $syncData = [];
+            foreach ($request->subject_ids as $id) {
+                $syncData[$id] = [
+                    'semester' => $semester,
+                    'academic_year' => $academicYear
+                ];
+            }
 
-        // We only want to sync for the CURRENT semester/year to avoid wiping history
-        // First, get other enrollments to preserve them
-        $otherEnrollments = $student->subjects()
-            ->where(function($query) use ($semester, $academicYear) {
-                $query->where('semester', '!=', $semester)
-                      ->orWhere('academic_year', '!=', $academicYear);
-            })
-            ->get()
-            ->mapWithKeys(function ($item) {
-                return [$item->id => [
-                    'semester' => $item->pivot->semester,
-                    'academic_year' => $item->pivot->academic_year
-                ]];
-            })->toArray();
+            // We only want to sync for the CURRENT semester/year to avoid wiping history
+            // First, get other enrollments to preserve them
+            $otherEnrollments = $student->subjects()
+                ->where(function($query) use ($semester, $academicYear) {
+                    $query->where('semester', '!=', $semester)
+                          ->orWhere('academic_year', '!=', $academicYear);
+                })
+                ->get()
+                ->mapWithKeys(function ($item) {
+                    return [$item->id => [
+                        'semester' => $item->pivot->semester,
+                        'academic_year' => $item->pivot->academic_year
+                    ]];
+                })->toArray();
 
-        $student->subjects()->sync($syncData + $otherEnrollments);
+            $student->subjects()->sync($syncData + $otherEnrollments);
 
-        return redirect()->route('students.show', $student->id)
-            ->with('success', "Enrollment updated successfully for $semester AY $academicYear.");
+            return redirect()->route('students.show', $student->id)
+                ->with('success', "Enrollment updated successfully for $semester AY $academicYear.");
+        });
     }
 }
