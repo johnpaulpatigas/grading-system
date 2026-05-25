@@ -85,12 +85,11 @@
         </form>
     </div>
     <div class="flex items-center space-x-3">
-        <form action="{{ route('grading.submit') }}" method="POST" onsubmit="return confirm('Are you sure you want to finalize these grades? They cannot be edited afterwards.')">
+        <form action="{{ route('grading.submit') }}" method="POST" class="inline">
             @csrf
             <input type="hidden" name="subject_id" value="{{ $selectedSubjectId }}">
-            <button type="submit" class="px-8 py-2.5 bg-[#0258E3] text-white font-semibold text-sm rounded-lg hover:bg-blue-700 shadow-md transition-all">Submit Grades</button>
-        </form>
-    </div>
+            <button type="button" onclick="showConfirmModal('Are you sure you want to finalize these grades? They cannot be edited afterwards.', 'Finalize Grades', this.closest('form'))" class="px-8 py-2.5 bg-[#0258E3] text-white font-semibold text-sm rounded-lg hover:bg-blue-700 shadow-md transition-all">Submit Grades</button>
+        </form>    </div>
 </div>
 <!-- END: Grade Encoding Header -->
 

@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- BEGIN: PageContent -->
-<div class="max-w-4xl">
+<div class="max-w-4xl mx-auto">
     <!-- Breadcrumbs -->
     <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-6">
         <a class="flex items-center hover:text-gray-800 transition-colors" href="{{ route('grading.index', ['subject_id' => $subject->id]) }}">

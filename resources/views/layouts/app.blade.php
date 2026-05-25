@@ -131,6 +131,7 @@
     </main>
     <!-- END: MainContent -->
     @include('partials.flash-messages')
+    @include('partials.confirm-modal')
     @stack('scripts')
 </body>
 </html>
