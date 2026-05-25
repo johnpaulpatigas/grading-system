@@ -46,24 +46,34 @@
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="employee_id">Employee ID <span class="text-red-500">*</span></label>
-                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="employee_id" name="employee_id" maxlength="12" placeholder="FAC-2026-001" type="text" value="{{ old('employee_id', $faculty->employee_id) }}" required/>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="employee_id_suffix">Employee ID <span class="text-red-500">*</span></label>
+                    <div class="flex items-center w-full border border-gray-200 rounded-lg overflow-hidden bg-gray-50 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all flex-nowrap">
+                        <span class="px-3 py-3 text-sm text-gray-500 font-bold bg-gray-100 border-r border-gray-200 select-none whitespace-nowrap">FAC-2026-</span>
+                        <input class="w-full px-4 py-3 text-sm bg-transparent border-none focus:outline-none" id="employee_id_suffix" maxlength="3" placeholder="001" type="text" value="{{ old('employee_id') ? substr(old('employee_id'), 9) : substr($faculty->employee_id, 9) }}" required/>
+                    </div>
+                    <input type="hidden" name="employee_id" id="employee_id" value="{{ old('employee_id', $faculty->employee_id) }}"/>
                     @error('employee_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <script>
-                    const empInput = document.getElementById('employee_id');
+                    const suffixInput = document.getElementById('employee_id_suffix');
+                    const hiddenInput = document.getElementById('employee_id');
                     const prefix = "FAC-2026-";
-                    empInput.addEventListener('input', () => {
-                        if (!empInput.value.startsWith(prefix)) {
-                            empInput.value = prefix + empInput.value.replace(prefix, '');
-                        }
-                    });
+
+                    function updateFullId() {
+                        const suffix = suffixInput.value.replace(/[^0-9]/g, '');
+                        suffixInput.value = suffix;
+                        hiddenInput.value = prefix + suffix.padStart(3, '0');
+                    }
+
+                    suffixInput.addEventListener('input', updateFullId);
+                    // Initialize on load
+                    updateFullId();
                 </script>
 
                 <div class="space-y-1.5">
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="department">Department <span class="text-red-500">*</span></label>
-                    <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600" id="department" name="department" required>
+                    <select class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-white bg-no-repeat bg-[right_1rem_center]" id="department" name="department" required>
                         <option value="">Select Department</option>
                         <option value="College of Computer Studies" {{ old('department', $faculty->department) == 'College of Computer Studies' ? 'selected' : '' }}>College of Computer Studies</option>
                         <option value="College of Business & Education" {{ old('department', $faculty->department) == 'College of Business & Education' ? 'selected' : '' }}>College of Business & Education</option>
