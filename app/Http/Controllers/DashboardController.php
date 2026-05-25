@@ -93,8 +93,11 @@ class DashboardController extends Controller
             })->sortBy('avg')->values();
             
             $rank = $student ? $allStudentAverages->search(fn($item) => $item['id'] === $student->id) + 1 : '-';
-            $ordinal = $rank !== '-' ? match($rank % 10) { 1 => 'st', 2 => 'nd', 3 => 'rd', default => 'th' } : '';
-            if ($rank > 10 && $rank < 20) $ordinal = 'th';
+            $ordinal = '';
+            if (is_numeric($rank)) {
+                $ordinal = match($rank % 10) { 1 => 'st', 2 => 'nd', 3 => 'rd', default => 'th' };
+                if ($rank > 10 && $rank < 20) $ordinal = 'th';
+            }
 
             return view('student.dashboard', compact('grades', 'gpa', 'unitsEarned', 'rank', 'ordinal'));
         }
@@ -104,7 +107,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isFaculty()) {
             $studentId = $request->get('student_id');
             if ($studentId) {
                 $student = Student::with(['user', 'grades.subject'])->findOrFail($studentId);
@@ -115,7 +118,13 @@ class DashboardController extends Controller
             return view('reports.selection', compact('students'));
         }
 
-        $student = $user->student->load(['grades.subject']);
+        $student = $user->student;
+        
+        if (!$student) {
+            return redirect()->route('dashboard')->with('error', 'Student profile not found. Please contact the administrator.');
+        }
+
+        $student->load(['grades.subject']);
         return view('reports.index', compact('student'));
     }
 }
