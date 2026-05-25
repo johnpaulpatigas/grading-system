@@ -33,7 +33,7 @@
     <aside class="w-64 bg-[#1a1c23] text-gray-400 flex flex-col h-full" data-purpose="main-sidebar">
         <!-- Sidebar Logo Section -->
         <div class="p-6 flex items-center gap-3">
-            <img alt="CPC Logo" class="w-10 h-10 object-contain rounded-full bg-white p-0.5" data-purpose="logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5MdWhunn_mmZD54EDZCmsylN7-pZ81bM9pf5PVpPUfMQWXnwtb-G6ZJ-T0mehVznCi9Bd_DYjeTQyg1dpxyuSP4VntB8hQA9MZ1LTRDn3vyuArr_Cz_o86JqavmaKA_ecfuKmA3Xlzlf39nbpExrYeXA57PfSzI2k3oC_Wab8z8Hzwra2cYxI7xlzPFSvpqo9C0aSIsn2gKRMlU-pRQ78VI0BI2YK6-IV_hMqnKL9Ofvn7aCMDrgI0OAqcXJpQgFdIwFqYWqqGdY"/>
+            <img alt="CPC Logo" class="w-10 h-10 object-contain rounded-full bg-white p-0.5" data-purpose="logo" src="{{ asset('cpclogo.png') }}"/>
             <div>
                 <h1 class="text-white font-bold text-lg leading-tight">CPC Portal</h1>
                 <p class="text-xs text-gray-500">{{ Auth::user()->role === 'admin' ? 'Registrar Office' : (Auth::user()->role === 'faculty' ? 'Faculty Portal' : 'Student Portal') }}</p>
@@ -130,6 +130,7 @@
         </div>
     </main>
     <!-- END: MainContent -->
+    @include('partials.flash-messages')
     @stack('scripts')
 </body>
 </html>
