@@ -97,12 +97,8 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
-                <!-- Password Input -->
                 <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider" for="password">Password</label>
-                        <a class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors" href="#">Forgot Password?</a>
-                    </div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider" for="password">Password</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                             <!-- Lock Icon -->
