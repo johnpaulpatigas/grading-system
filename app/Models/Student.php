@@ -12,6 +12,15 @@ class Student extends Model
         'Bachelor of Secondary Education',
     ];
 
+    const YEAR_LEVELS = [
+        '1st Year' => 1,
+        '2nd Year' => 2,
+        '3rd Year' => 3,
+        '4th Year' => 4,
+    ];
+
+    const SECTIONS = ['A', 'B', 'C', 'D'];
+
     protected $fillable = [
         'user_id',
         'student_id',

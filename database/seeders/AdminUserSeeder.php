@@ -46,7 +46,7 @@ class AdminUserSeeder extends Seeder
             'student_id' => '20230753',
             'course' => 'BS Information Technology',
             'year_level' => '3rd Year',
-            'section' => 'A-1',
+            'section' => '3A',
         ]);
     }
 }

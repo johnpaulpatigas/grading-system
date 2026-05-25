@@ -88,12 +88,11 @@
                         <!-- Year Level -->
                         <div class="space-y-1.5">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider" for="year_level">Year Level</label>
-                            <select class="block w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-900 transition-all" id="year_level" name="year_level" required>
+                            <select class="block w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-900 transition-all" id="year_level" name="year_level" required onchange="updateSections()">
                                 <option value="">Select Year</option>
-                                <option value="1st Year">1st Year</option>
-                                <option value="2nd Year">2nd Year</option>
-                                <option value="3rd Year">3rd Year</option>
-                                <option value="4th Year">4th Year</option>
+                                @foreach(\App\Models\Student::YEAR_LEVELS as $label => $num)
+                                    <option value="{{ $label }}" {{ old('year_level') === $label ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
                             </select>
                             @error('year_level') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
@@ -101,7 +100,9 @@
                         <!-- Section -->
                         <div class="space-y-1.5">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider" for="section">Section</label>
-                            <input class="block w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-900 transition-all" id="section" name="section" placeholder="A-1" type="text" value="{{ old('section') }}" required/>
+                            <select class="block w-full px-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-900 transition-all" id="section" name="section" required>
+                                <option value="">Select Section</option>
+                            </select>
                             @error('section') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
@@ -134,5 +135,36 @@
             </div>
         </section>
     </main>
+
+    <script>
+        const yearMapping = @json(\App\Models\Student::YEAR_LEVELS);
+        const sections = @json(\App\Models\Student::SECTIONS);
+
+        function updateSections() {
+            const yearLevelSelect = document.getElementById('year_level');
+            const sectionSelect = document.getElementById('section');
+            const selectedYear = yearLevelSelect.value;
+            const oldSection = "{{ old('section') }}";
+
+            sectionSelect.innerHTML = '<option value="">Select Section</option>';
+
+            if (selectedYear && yearMapping[selectedYear]) {
+                const num = yearMapping[selectedYear];
+                sections.forEach(s => {
+                    const value = num + s;
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = 'Section ' + value;
+                    if (value === oldSection) {
+                        option.selected = true;
+                    }
+                    sectionSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', updateSections);
+    </script>
 </body>
 </html>

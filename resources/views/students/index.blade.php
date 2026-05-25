@@ -34,18 +34,14 @@
                     <option value="{{ $course }}" {{ request('course') === $course ? 'selected' : '' }}>{{ $course }}</option>
                 @endforeach
             </select>
-            <select name="year_level" class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[140px] appearance-none bg-none" onchange="this.form.submit()">
+            <select name="year_level" id="year_level" class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[140px] appearance-none bg-none" onchange="updateSections(); this.form.submit()">
                 <option value="Year Level">Year Level</option>
-                <option value="1st Year" {{ request('year_level') === '1st Year' ? 'selected' : '' }}>1st Year</option>
-                <option value="2nd Year" {{ request('year_level') === '2nd Year' ? 'selected' : '' }}>2nd Year</option>
-                <option value="3rd Year" {{ request('year_level') === '3rd Year' ? 'selected' : '' }}>3rd Year</option>
-                <option value="4th Year" {{ request('year_level') === '4th Year' ? 'selected' : '' }}>4th Year</option>
+                @foreach(\App\Models\Student::YEAR_LEVELS as $label => $num)
+                    <option value="{{ $label }}" {{ request('year_level') === $label ? 'selected' : '' }}>{{ $label }}</option>
+                @endforeach
             </select>
-            <select name="section" class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[140px] appearance-none bg-none" onchange="this.form.submit()">
+            <select name="section" id="section" class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[140px] appearance-none bg-none" onchange="this.form.submit()">
                 <option value="All Sections">All Sections</option>
-                <option value="A-1" {{ request('section') === 'A-1' ? 'selected' : '' }}>Section A-1</option>
-                <option value="B-4" {{ request('section') === 'B-4' ? 'selected' : '' }}>Section B-4</option>
-                <option value="C-1" {{ request('section') === 'C-1' ? 'selected' : '' }}>Section C-1</option>
             </select>
         </div>
         <div class="flex items-center gap-3 w-full md:w-auto">
@@ -125,4 +121,35 @@
     <!-- END: Table Footer / Pagination -->
 </div>
 <!-- END: Students Table Container -->
+
+<script>
+    const yearMapping = @json(\App\Models\Student::YEAR_LEVELS);
+    const sections = @json(\App\Models\Student::SECTIONS);
+    const currentSection = "{{ request('section') }}";
+
+    function updateSections() {
+        const yearLevelSelect = document.getElementById('year_level');
+        const sectionSelect = document.getElementById('section');
+        const selectedYear = yearLevelSelect.value;
+
+        sectionSelect.innerHTML = '<option value="All Sections">All Sections</option>';
+
+        if (selectedYear && yearMapping[selectedYear]) {
+            const num = yearMapping[selectedYear];
+            sections.forEach(s => {
+                const value = num + s;
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = 'Section ' + value;
+                if (value === currentSection) {
+                    option.selected = true;
+                }
+                sectionSelect.appendChild(option);
+            });
+        }
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', updateSections);
+</script>
 @endsection

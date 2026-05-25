@@ -61,8 +61,16 @@ class StudentController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'student_id' => 'required|string|max:20|unique:students',
             'course' => ['required', 'string', Rule::in(Student::COURSES)],
-            'year_level' => 'required|string|max:20',
-            'section' => 'required|string|max:20',
+            'year_level' => ['required', 'string', Rule::in(array_keys(Student::YEAR_LEVELS))],
+            'section' => ['required', 'string', function ($attribute, $value, $fail) use ($request) {
+                $yearLevel = $request->year_level;
+                if (!isset(Student::YEAR_LEVELS[$yearLevel])) return;
+                $num = Student::YEAR_LEVELS[$yearLevel];
+                $validSections = array_map(fn($s) => $num . $s, Student::SECTIONS);
+                if (!in_array($value, $validSections)) {
+                    $fail("The selected section is invalid for the chosen year level.");
+                }
+            }],
         ]);
 
         $user = User::create([
@@ -109,8 +117,16 @@ class StudentController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $student->user_id,
             'student_id' => 'required|string|max:20|unique:students,student_id,' . $student->id,
             'course' => ['required', 'string', Rule::in(Student::COURSES)],
-            'year_level' => 'required|string|max:20',
-            'section' => 'required|string|max:20',
+            'year_level' => ['required', 'string', Rule::in(array_keys(Student::YEAR_LEVELS))],
+            'section' => ['required', 'string', function ($attribute, $value, $fail) use ($request) {
+                $yearLevel = $request->year_level;
+                if (!isset(Student::YEAR_LEVELS[$yearLevel])) return;
+                $num = Student::YEAR_LEVELS[$yearLevel];
+                $validSections = array_map(fn($s) => $num . $s, Student::SECTIONS);
+                if (!in_array($value, $validSections)) {
+                    $fail("The selected section is invalid for the chosen year level.");
+                }
+            }],
         ]);
 
         $student->user->update([
