@@ -46,13 +46,6 @@
                         @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     
-                    <!-- Email -->
-                    <div class="space-y-1.5">
-                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="email">Email Address <span class="text-red-500">*</span></label>
-                        <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="email" name="email" placeholder="jane.doe@cpc.edu" type="email" value="{{ old('email') }}" required/>
-                        @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                    </div>
-
                     <!-- Student ID -->
                     <div class="space-y-1.5">
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="student_id">Student ID <span class="text-red-500">*</span></label>

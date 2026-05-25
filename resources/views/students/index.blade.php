@@ -81,7 +81,6 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="text-sm font-bold text-gray-900">{{ $student->user->name }}</div>
-                        <div class="text-xs text-gray-500">{{ $student->user->email }}</div>
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-600">{{ $student->course }}</td>
                     <td class="px-6 py-4 text-sm text-gray-600">{{ $student->year_level }}</td>

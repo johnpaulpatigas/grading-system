@@ -53,18 +53,6 @@
                     </div>
                 </div>
             </section>
-
-            <section class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-                <div class="px-8 py-6 border-b border-gray-100 bg-gray-50/50">
-                    <h3 class="font-bold text-gray-900">Contact Details</h3>
-                </div>
-                <div class="p-8 space-y-6">
-                    <div>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Institutional Email</p>
-                        <p class="text-blue-600 font-medium">{{ $student->user->email }}</p>
-                    </div>
-                </div>
-            </section>
         </div>
 
         <div class="space-y-8">

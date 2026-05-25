@@ -58,7 +58,6 @@ class StudentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
             'student_id' => 'required|string|max:20|unique:students',
             'course' => ['required', 'string', Rule::in(Student::COURSES)],
             'year_level' => ['required', 'string', Rule::in(array_keys(Student::YEAR_LEVELS))],
@@ -75,7 +74,6 @@ class StudentController extends Controller
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
             'password' => Hash::make('password'),
             'role' => 'student',
         ]);
@@ -114,7 +112,6 @@ class StudentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $student->user_id,
             'student_id' => 'required|string|max:20|unique:students,student_id,' . $student->id,
             'course' => ['required', 'string', Rule::in(Student::COURSES)],
             'year_level' => ['required', 'string', Rule::in(array_keys(Student::YEAR_LEVELS))],
@@ -131,7 +128,6 @@ class StudentController extends Controller
 
         $student->user->update([
             'name' => $request->name,
-            'email' => $request->email,
         ]);
 
         $student->update([

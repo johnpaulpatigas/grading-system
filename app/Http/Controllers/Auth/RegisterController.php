@@ -21,7 +21,6 @@ class RegisterController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'student_id' => ['required', 'string', 'max:20'],
             'course' => ['required', 'string', Rule::in(Student::COURSES)],
@@ -48,7 +47,6 @@ class RegisterController extends Controller
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'student',
         ]);

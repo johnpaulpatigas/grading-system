@@ -36,7 +36,6 @@ class AdminUserSeeder extends Seeder
         
         $studentUser = User::create([
             'name' => 'Student User',
-            'email' => 'student@cpc.edu',
             'password' => Hash::make('password'),
             'role' => 'student',
         ]);
