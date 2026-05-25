@@ -1,6 +1,6 @@
 @if (session('success') || session('error'))
     <div id="flash-message" 
-         class="fixed bottom-5 right-5 z-[100] p-4 rounded-lg shadow-2xl {{ session('success') ? 'bg-green-600' : 'bg-red-600' }} text-white transition-all duration-500 ease-out translate-y-0 opacity-100 border border-white/20">
+         class="fixed bottom-5 right-5 z-100 p-4 rounded-lg shadow-2xl {{ session('success') ? 'bg-green-600' : 'bg-red-600' }} text-white transition-all duration-500 ease-out translate-y-0 opacity-100 border border-white/20">
         {{ session('success') ?? session('error') }}
     </div>
     <script>

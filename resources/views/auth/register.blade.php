@@ -19,7 +19,7 @@
             <div class="relative z-10">
                 <header class="flex items-center gap-3 mb-16">
                     <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                        <img alt="CPC Logo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRSwD6eREkGiHMbd6FGRDdWOdOvp-zLefPfTuLkEk6z8O7QSj5bPCfNTJyj8YhGJ1YsRu_J8Tror_8qy-raFrD9SW8bk8_5wa0J6hv6vkWXR2uElEWHl6iRlOO9o_mfKERUBpzXf51t2u4oh05LwynEwQ0nTAKeWoDLbt8Kfn5HLgFNHzi1Q3k9SIR99UhOw9wxw3hroTp2b8Z8bqhvPnEVJk1YgVrKD_xr-CfiDEsXvJDjIlWk2ksPqkGRuH5WkTXUzQ7X7yW7F0"/>
+                        <img alt="CPC Logo" class="w-full h-full object-cover" src="{{ asset('cpclogo.png') }}"/>
                     </div>
                     <h1 class="font-bold text-lg tracking-tight">Cordova Public College Kiosk</h1>
                 </header>

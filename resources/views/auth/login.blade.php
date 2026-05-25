@@ -33,8 +33,8 @@
             <!-- Logo Header -->
             <header class="flex items-center gap-3 mb-16">
                 <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                    <!-- CPC Logo Placeholder -->
-                    <img alt="CPC Logo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRSwD6eREkGiHMbd6FGRDdWOdOvp-zLefPfTuLkEk6z8O7QSj5bPCfNTJyj8YhGJ1YsRu_J8Tror_8qy-raFrD9SW8bk8_5wa0J6hv6vkWXR2uElEWHl6iRlOO9o_mfKERUBpzXf51t2u4oh05LwynEwQ0nTAKeWoDLbt8Kfn5HLgFNHzi1Q3k9SIR99UhOw9wxw3hroTp2b8Z8bqhvPnEVJk1YgVrKD_xr-CfiDEsXvJDjIlWk2ksPqkGRuH5WkTXUzQ7X7yW7F0"/>
+                    <!-- CPC Logo -->
+                    <img alt="CPC Logo" class="w-full h-full object-cover" src="{{ asset('cpclogo.png') }}"/>
                 </div>
                 <h1 class="font-bold text-lg tracking-tight">Cordova Public College Kiosk</h1>
             </header>
@@ -50,7 +50,7 @@
             <!-- Featured Image Area -->
             <div class="mt-12 rounded-xl overflow-hidden grayscale border border-white/10">
                 <!-- Institutional Group Photo -->
-                <img alt="Institutional History Photo" class="w-full h-auto object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC--SaMOY2-tj9ZHf0A6Jcdp9zFSGAqLUuDLuh8BjyDLbcgxsXRIByffRPj5DtPekDj0tfKyy8yiXt-2LPBQAwP9iBfivxDU5K0A2MPygst0pgS1StRd2NXHUA_BGQG5ar55vFPaM551BTCA3rxcRvxFy-aLJHvwj0X0pEKfmHJWOr01lbkjbWRTOvF4pksAvJdxnFHvGIesCsBqeTgG8f0GpusF07Qie08hp-i1K8QYkk-KqHwbnoWaQmtMDrsWEsSPhcA3r2BHg"/>
+                <img alt="Institutional History Photo" class="w-full h-auto object-cover opacity-80" src="{{ asset('front.jpg') }}"/>
             </div>
         </div>
         <!-- Left Column Footer Stats -->

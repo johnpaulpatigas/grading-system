@@ -17,11 +17,11 @@
         <p class="text-gray-500 mt-1">Review and print official CPC credentials.</p>
     </div>
     <div class="flex space-x-3">
-        <button class="inline-flex items-center px-5 py-2.5 border border-gray-300 rounded text-sm font-medium text-slate-700 bg-white hover:bg-gray-50 shadow-sm">
+        <button onclick="exportToPDF()" class="inline-flex items-center px-5 py-2.5 border border-gray-300 rounded text-sm font-medium text-slate-700 bg-white hover:bg-gray-50 shadow-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             Export PDF
         </button>
-        <button class="inline-flex items-center px-5 py-2.5 bg-blue-700 border border-transparent rounded text-sm font-medium text-white hover:bg-blue-800 shadow-sm">
+        <button onclick="window.print()" class="inline-flex items-center px-5 py-2.5 bg-blue-700 border border-transparent rounded text-sm font-medium text-white hover:bg-blue-800 shadow-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             Print Document
         </button>
@@ -29,11 +29,11 @@
 </div>
 
 <!-- BEGIN: Report Preview Container -->
-<div class="bg-white mx-auto p-16 border border-gray-200 shadow-lg" style="max-width: 850px; min-height: 1056px;">
+<div id="report-container" class="bg-white mx-auto p-16 border border-gray-200 shadow-lg" style="max-width: 850px; min-height: 1056px;">
     <!-- BEGIN: Document Header -->
     <div class="flex items-center justify-between pb-8 border-b-2 border-slate-800">
         <div class="flex items-center space-x-6">
-            <img alt="CPC Seal" class="w-24 h-24" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOHv9PTkVMszjQ1mMud-gtqRsixD-d-lrECOo20DuPt4gfiiSn-YLV6H82uCyVVmsxA_I0DoOf0CHgS-gPopQIelNy7_OigUbJbfxXMWSAJxUoEZF6lP1i_7OCxpb6QTvjTBUJysyjNs_I9fBztODaO3fpwtY-yYMPkOaP7Qe620JbTZifysIvEsk15yOAHgLeoWCM8KRbCJJgDxNhKY5tD5u2kq6bdyCkUnttb87mWcKdVQwfM37Hg6AJICKlVcGMXJJkEfckZ48"/>
+            <img alt="CPC Seal" class="w-24 h-24" src="{{ asset('cpclogo.png') }}"/>
             <div>
                 <h3 class="text-4xl font-extrabold tracking-tight text-slate-800 leading-none">CORDOVA PUBLIC COLLEGE</h3>
                 <p class="text-xs font-bold tracking-[0.2em] text-slate-600 mt-2">OFFICE OF THE COLLEGE REGISTRAR</p>
@@ -144,3 +144,54 @@
 </div>
 <!-- END: Report Preview Container -->
 @endsection
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    function exportToPDF() {
+        const element = document.getElementById('report-container');
+        const studentName = "{{ str_replace(' ', '_', $student->user->name) }}";
+        const opt = {
+            margin:       10,
+            filename:     `Report_Card_${studentName}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
+@endpush
+
+@push('styles')
+<style type="text/css" media="print">
+    @page {
+        size: auto;
+        margin: 1cm;
+    }
+
+    /* Hide everything by default */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Only show the report container and its contents */
+    #report-container, #report-container * {
+        visibility: visible;
+    }
+
+    /* Position the report container at the top left */
+    #report-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none !important;
+        border: none !important;
+        /* Ensure content doesn't break across pages unnecessarily */
+        page-break-inside: avoid;
+    }
+</style>
+@endpush
