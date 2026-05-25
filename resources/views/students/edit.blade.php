@@ -41,7 +41,7 @@
 
                 <div class="space-y-1.5">
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="student_id">Student ID <span class="text-red-500">*</span></label>
-                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="student_id" name="student_id" placeholder="2023-0001" type="text" value="{{ old('student_id', $student->student_id) }}" required/>
+                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="student_id" name="student_id" maxlength="8" placeholder="20230753" type="text" value="{{ old('student_id', $student->student_id) }}" required/>
                     @error('student_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 

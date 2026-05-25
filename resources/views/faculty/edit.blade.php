@@ -47,9 +47,19 @@
 
                 <div class="space-y-1.5">
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="employee_id">Employee ID <span class="text-red-500">*</span></label>
-                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="employee_id" name="employee_id" placeholder="EMP-0001" type="text" value="{{ old('employee_id', $faculty->employee_id) }}" required/>
+                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="employee_id" name="employee_id" maxlength="12" placeholder="FAC-2026-001" type="text" value="{{ old('employee_id', $faculty->employee_id) }}" required/>
                     @error('employee_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
+
+                <script>
+                    const empInput = document.getElementById('employee_id');
+                    const prefix = "FAC-2026-";
+                    empInput.addEventListener('input', () => {
+                        if (!empInput.value.startsWith(prefix)) {
+                            empInput.value = prefix + empInput.value.replace(prefix, '');
+                        }
+                    });
+                </script>
 
                 <div class="space-y-1.5">
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="department">Department <span class="text-red-500">*</span></label>

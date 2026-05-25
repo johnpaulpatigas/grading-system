@@ -41,7 +41,7 @@ class FacultyController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'employee_id' => 'required|string|max:20|unique:faculties',
+            'employee_id' => 'required|string|size:12|unique:faculties',
             'department' => 'required|string|max:100',
             'subject_ids' => 'nullable|array',
             'subject_ids.*' => 'exists:subjects,id',
@@ -92,7 +92,7 @@ class FacultyController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $faculty->user_id,
-            'employee_id' => 'required|string|max:20|unique:faculties,employee_id,' . $faculty->id,
+            'employee_id' => 'required|string|size:12|unique:faculties,employee_id,' . $faculty->id,
             'department' => 'required|string|max:100',
             'subject_ids' => 'nullable|array',
             'subject_ids.*' => 'exists:subjects,id',

@@ -58,7 +58,7 @@ class StudentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'student_id' => 'required|string|max:20|unique:students',
+            'student_id' => 'required|string|size:8|unique:students',
             'course' => ['required', 'string', Rule::in(Student::COURSES)],
             'year_level' => ['required', 'string', Rule::in(array_keys(Student::YEAR_LEVELS))],
             'section' => ['required', 'string', function ($attribute, $value, $fail) use ($request) {
@@ -112,7 +112,7 @@ class StudentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'student_id' => 'required|string|max:20|unique:students,student_id,' . $student->id,
+            'student_id' => 'required|string|size:8|unique:students,student_id,' . $student->id,
             'course' => ['required', 'string', Rule::in(Student::COURSES)],
             'year_level' => ['required', 'string', Rule::in(array_keys(Student::YEAR_LEVELS))],
             'section' => ['required', 'string', function ($attribute, $value, $fail) use ($request) {
