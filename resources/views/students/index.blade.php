@@ -30,9 +30,9 @@
             </div>
             <select name="course" class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[160px] appearance-none bg-none" onchange="this.form.submit()">
                 <option value="All Courses">All Courses</option>
-                <option value="BS Computer Science" {{ request('course') === 'BS Computer Science' ? 'selected' : '' }}>BS Computer Science</option>
-                <option value="BS Information Tech" {{ request('course') === 'BS Information Tech' ? 'selected' : '' }}>BS Information Tech</option>
-                <option value="BS Mech Eng" {{ request('course') === 'BS Mech Eng' ? 'selected' : '' }}>BS Mech Eng</option>
+                @foreach(\App\Models\Student::COURSES as $course)
+                    <option value="{{ $course }}" {{ request('course') === $course ? 'selected' : '' }}>{{ $course }}</option>
+                @endforeach
             </select>
             <select name="year_level" class="rounded-lg border-gray-300 text-gray-700 text-sm focus:ring-blue-500 focus:border-blue-500 min-w-[140px] appearance-none bg-none" onchange="this.form.submit()">
                 <option value="Year Level">Year Level</option>

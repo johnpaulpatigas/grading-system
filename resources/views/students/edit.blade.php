@@ -53,7 +53,12 @@
 
                 <div class="space-y-1.5">
                     <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="course">Course <span class="text-red-500">*</span></label>
-                    <input class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm" id="course" name="course" placeholder="e.g. BS Computer Science" type="text" value="{{ old('course', $student->course) }}" required/>
+                    <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-none bg-no-repeat bg-[right_1rem_center]" id="course" name="course" required>
+                        <option value="">Select Course</option>
+                        @foreach(\App\Models\Student::COURSES as $course)
+                            <option value="{{ $course }}" {{ old('course', $student->course) === $course ? 'selected' : '' }}>{{ $course }}</option>
+                        @endforeach
+                    </select>
                     @error('course') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 

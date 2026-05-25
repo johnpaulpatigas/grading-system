@@ -44,7 +44,7 @@ class AdminUserSeeder extends Seeder
         \App\Models\Student::create([
             'user_id' => $studentUser->id,
             'student_id' => '20230753',
-            'course' => 'BS Information Tech',
+            'course' => 'BS Information Technology',
             'year_level' => '3rd Year',
             'section' => 'A-1',
         ]);

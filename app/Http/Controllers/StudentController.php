@@ -6,6 +6,7 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
@@ -59,7 +60,7 @@ class StudentController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'student_id' => 'required|string|max:20|unique:students',
-            'course' => 'required|string|max:100',
+            'course' => ['required', 'string', Rule::in(Student::COURSES)],
             'year_level' => 'required|string|max:20',
             'section' => 'required|string|max:20',
         ]);
@@ -107,7 +108,7 @@ class StudentController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $student->user_id,
             'student_id' => 'required|string|max:20|unique:students,student_id,' . $student->id,
-            'course' => 'required|string|max:100',
+            'course' => ['required', 'string', Rule::in(Student::COURSES)],
             'year_level' => 'required|string|max:20',
             'section' => 'required|string|max:20',
         ]);

@@ -8,6 +8,7 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -23,7 +24,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'student_id' => ['required', 'string', 'max:20'],
-            'course' => ['required', 'string', 'max:100'],
+            'course' => ['required', 'string', Rule::in(Student::COURSES)],
             'year_level' => ['required', 'string', 'max:20'],
             'section' => ['required', 'string', 'max:20'],
         ]);

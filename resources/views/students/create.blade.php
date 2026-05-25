@@ -65,9 +65,9 @@
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider" for="course">Course <span class="text-red-500">*</span></label>
                         <select class="w-full px-4 py-3 rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm text-gray-600 appearance-none bg-none bg-no-repeat bg-[right_1rem_center]" id="course" name="course" required>
                             <option value="">Select Course</option>
-                            <option value="BS Computer Science" {{ old('course') === 'BS Computer Science' ? 'selected' : '' }}>BS Computer Science</option>
-                            <option value="BS Information Tech" {{ old('course') === 'BS Information Tech' ? 'selected' : '' }}>BS Information Tech</option>
-                            <option value="BS Mech Eng" {{ old('course') === 'BS Mech Eng' ? 'selected' : '' }}>BS Mech Eng</option>
+                            @foreach(\App\Models\Student::COURSES as $course)
+                                <option value="{{ $course }}" {{ old('course') === $course ? 'selected' : '' }}>{{ $course }}</option>
+                            @endforeach
                         </select>
                         @error('course') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
